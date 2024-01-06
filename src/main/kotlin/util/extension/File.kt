@@ -5,8 +5,8 @@ import com.github.ajalt.clikt.core.CliktError
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
-import com.neo.properties.Constants
 import com.neo.properties.model.Config
+import com.neo.properties.util.Constants
 import java.io.File
 import java.util.*
 

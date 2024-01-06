@@ -1,15 +1,15 @@
-package commands
+package com.neo.properties.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
-import com.neo.properties.Constants
 import com.neo.properties.model.Config
 import com.neo.properties.util.extension.asProperties
 import com.neo.properties.util.extension.create
 import com.neo.properties.util.extension.tryAddToGitIgnore
+import com.neo.properties.util.Constants
 import java.io.File
 
 class Install : CliktCommand(help = "Install environment control") {
