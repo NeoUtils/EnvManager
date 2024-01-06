@@ -1,5 +1,3 @@
 package com.neo.properties
 
-fun main() {
-    println("Hello World!")
-}
+fun main(args: Array<String>) = Properties().main(args)

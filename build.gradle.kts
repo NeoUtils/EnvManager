@@ -11,6 +11,11 @@ repositories {
 }
 
 dependencies {
+
+    // Clikt
+    implementation("com.github.ajalt.clikt:clikt:4.2.1")
+
+    // Tests
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
