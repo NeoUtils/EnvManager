@@ -1,12 +1,15 @@
 package com.neo.properties.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.CliktError
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.google.gson.Gson
-import com.neo.properties.model.Config
+import com.neo.properties.Constants
+import com.neo.properties.util.extension.asProperties
+import com.neo.properties.util.extension.getConfig
 import java.io.File
 import java.util.Properties
 
@@ -26,35 +29,28 @@ class Save : CliktCommand(help = "Save current environment") {
 
     override fun run() {
 
-        val environments = path.resolve("environment")
+        val environments = path.resolve(Constants.ENVIRONMENT_FOLDER)
 
         if (!environments.exists()) {
-            echo("Environment not installed")
+            echo("✖ Properties not installed")
+            echo("Install with \"properties install\"")
             return
         }
 
-        val config = Gson().fromJson(
-            environments
-                .resolve("config.json")
-                .readText(),
-            Config::class.java
-        )
+        val config = path.getConfig()
 
         val properties = File(config.properties)
 
-        if(!properties.exists()) {
-            echo("Properties file not found")
-            return
+        if (!properties.exists()) {
+            throw CliktError("Properties file not found")
         }
 
-        val newEnvironment = environments.resolve(tag)
-
-        newEnvironment.writeText(
+        environments.resolve(tag).writeText(
             Gson().toJson(
-                Properties().apply {
-                    load(properties.inputStream())
-                }.toMap()
+                properties.asProperties().toMap()
             )
         )
+
+        echo("✔ Properties saved with tag \"$tag\"")
     }
 }

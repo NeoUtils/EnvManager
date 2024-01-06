@@ -5,11 +5,12 @@ import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
-import com.github.ajalt.mordant.terminal.YesNoPrompt
-import com.google.gson.Gson
+import com.neo.properties.Constants
 import com.neo.properties.model.Config
+import com.neo.properties.util.extension.asProperties
+import com.neo.properties.util.extension.create
+import com.neo.properties.util.extension.tryAddToGitIgnore
 import java.io.File
-import java.util.*
 
 class Install : CliktCommand(help = "Install environment control") {
 
@@ -25,47 +26,37 @@ class Install : CliktCommand(help = "Install environment control") {
 
         echo("\nInstalling in \"${path.absolutePath}\"")
 
-        val environments = getOrCreateEnvironmentsFolder()
+        createEnvironmentsFolder()
 
-        val properties = getPropertiesFile()
+        val properties = getOrCreatePropertiesFile()
 
-        createConfigFile(environments, properties)
+        createConfigFile(properties)
 
-        val count = Properties().apply {
-            load(properties.inputStream())
-        }.count()
+        echo("\n✔ Installation complete")
+
+        val count = properties.asProperties().count()
 
         if (count == 1) {
             echo("\n❗ Properties file contains $count properties.")
-            echo("Use \"properties save -tag\" to save as an environment.")
+            echo("Use \"properties save -[tag]\" to save as an environment.")
         }
-
-        echo("\n✔ Installation complete")
     }
 
-    private fun createConfigFile(environments: File, properties: File) {
-        environments
-            .resolve("config.json")
-            .writeText(
-                Gson().toJson(
-                    Config(
-                        properties = properties.absolutePath
-                    )
-                )
-            )
+    private fun createConfigFile(properties: File) {
+        Config(
+            properties = properties.absolutePath
+        ).create(path)
     }
 
     private fun createProperties(properties: File) {
+
         properties.createNewFile()
         echo("✔ Properties file created")
 
-        if (YesNoPrompt("Add to gitignore?", terminal).ask() == true) {
-            File(properties.parent, ".gitignore").appendText("\n${properties.name}")
-            echo("✔ Added properties file to .gitignore")
-        }
+        path.tryAddToGitIgnore(properties.name)
     }
 
-    private fun getPropertiesFile(): File {
+    private fun getOrCreatePropertiesFile(): File {
 
         while (true) {
             val path = terminal.prompt("\nProperties file")
@@ -93,23 +84,22 @@ class Install : CliktCommand(help = "Install environment control") {
         }
     }
 
-    private fun getOrCreateEnvironmentsFolder(): File {
-        val file = File(path, "environment")
+    private fun createEnvironmentsFolder() {
 
-        if (file.exists()) {
+        val folder = File(path, Constants.ENVIRONMENT_FOLDER)
+
+        if (folder.exists()) {
+
             echo("✔ Environment folder found")
-            return file
+
+            return
         }
 
-        file.mkdirs()
-
+        folder.mkdirs()
         echo("\n✔ Created environment folder")
 
-        if (YesNoPrompt("Add to gitignore?", terminal).ask() == true) {
-            File(path, ".gitignore").appendText("\n\\environment")
-            echo("✔ Added environment folder to .gitignore")
-        }
+        path.tryAddToGitIgnore("\\${Constants.ENVIRONMENT_FOLDER}")
 
-        return file
+        return
     }
 }
