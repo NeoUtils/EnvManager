@@ -9,6 +9,7 @@ import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
 import com.neo.properties.model.Config
 import java.io.File
+import java.util.*
 
 class Install : CliktCommand(help = "Install environment control") {
 
@@ -24,72 +25,89 @@ class Install : CliktCommand(help = "Install environment control") {
 
         echo("\nInstalling in \"${path.absolutePath}\"")
 
-        val environments = createEnvironmentsFolder()
+        val environments = getOrCreateEnvironmentsFolder()
 
         val properties = getPropertiesFile()
 
-        if (properties.exists()) {
-            echo("Properties file found")
-        } else {
-            echo("Properties file not found")
-            createProperties(properties)
+        createConfigFile(environments, properties)
+
+        val count = Properties().apply {
+            load(properties.inputStream())
+        }.count()
+
+        if (count == 1) {
+            echo("\n❗ Properties file contains $count properties.")
+            echo("Use \"properties save -tag\" to save as an environment.")
         }
 
-        environments.resolve("config.json").writeText(
-            Gson().toJson(
-                Config(
-                    properties = properties.absolutePath
+        echo("\n✔ Installation complete")
+    }
+
+    private fun createConfigFile(environments: File, properties: File) {
+        environments
+            .resolve("config.json")
+            .writeText(
+                Gson().toJson(
+                    Config(
+                        properties = properties.absolutePath
+                    )
                 )
             )
-        )
-
-        echo("\nInstallation complete")
     }
 
     private fun createProperties(properties: File) {
         properties.createNewFile()
-        echo("Properties file created")
+        echo("✔ Properties file created")
 
-        if(YesNoPrompt("Add to gitignore?", terminal).ask() == true) {
+        if (YesNoPrompt("Add to gitignore?", terminal).ask() == true) {
             File(properties.parent, ".gitignore").appendText("\n${properties.name}")
-            echo("Added properties file to .gitignore")
+            echo("✔ Added properties file to .gitignore")
         }
     }
 
     private fun getPropertiesFile(): File {
+
         while (true) {
             val path = terminal.prompt("\nProperties file")
 
             if (path.isNullOrEmpty()) {
-                echo("Path cannot be empty", err = true)
+                echo("✖ Path cannot be empty", err = true)
                 continue
             }
 
             val file = File(path)
 
             if (file.exists() && file.isDirectory) {
-                echo("Path is not a file", err = true)
+                echo("✖ Path is not a file", err = true)
                 continue
+            }
+
+            if (file.exists()) {
+                echo("✔ Properties file found")
+            } else {
+                echo("❗ Properties file not found")
+                createProperties(file)
             }
 
             return file
         }
     }
 
-    private fun createEnvironmentsFolder() : File {
+    private fun getOrCreateEnvironmentsFolder(): File {
         val file = File(path, "environment")
 
         if (file.exists()) {
-            echo("Environment folder found")
+            echo("✔ Environment folder found")
             return file
         }
 
         file.mkdirs()
-        echo("\nCreated environment folder")
+
+        echo("\n✔ Created environment folder")
 
         if (YesNoPrompt("Add to gitignore?", terminal).ask() == true) {
             File(path, ".gitignore").appendText("\n\\environment")
-            echo("Added environment folder to .gitignore")
+            echo("✔ Added environment folder to .gitignore")
         }
 
         return file

@@ -7,6 +7,6 @@ import commands.Install
 class Properties : NoOpCliktCommand() {
 
     init {
-        subcommands(Install())
+        subcommands(Install(), Save())
     }
 }
