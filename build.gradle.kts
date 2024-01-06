@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.21"
+    id("application")
 }
 
 group = "com.neo.properties"
@@ -19,4 +20,8 @@ tasks.test {
 
 kotlin {
     jvmToolchain(17)
+}
+
+application {
+    mainClass.set("com.neo.properties.MainKt")
 }
