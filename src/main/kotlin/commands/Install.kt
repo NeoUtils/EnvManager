@@ -1,10 +1,7 @@
 package com.neo.properties.commands
 
-import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.terminal
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.types.file
+import com.neo.properties.core.BaseCommand
 import com.neo.properties.model.Config
 import com.neo.properties.util.extension.asProperties
 import com.neo.properties.util.extension.create
@@ -12,19 +9,9 @@ import com.neo.properties.util.extension.tryAddToGitIgnore
 import com.neo.properties.util.Constants
 import java.io.File
 
-class Install : CliktCommand(help = "Install environment control") {
-
-    private val path by option(
-        help = "Path to install"
-    ).file(
-        mustExist = true,
-        canBeDir = true,
-        canBeFile = false
-    ).default(File("."))
+class Install : BaseCommand(help = "Install environment control") {
 
     override fun run() {
-
-        echo("\nInstalling in \"${path.absolutePath}\"")
 
         createEnvironmentsFolder()
 
@@ -44,7 +31,8 @@ class Install : CliktCommand(help = "Install environment control") {
 
     private fun createConfigFile(properties: File) {
         Config(
-            properties = properties.absolutePath
+            targetPath = properties.absolutePath,
+            environmentsPath = ""
         ).create(path)
     }
 

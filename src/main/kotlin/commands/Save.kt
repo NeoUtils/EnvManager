@@ -38,7 +38,7 @@ class Save : CliktCommand(help = "Save current environment") {
 
         val config = path.getConfig()
 
-        val properties = File(config.properties)
+        val properties = File(config.targetPath)
 
         if (!properties.exists()) {
             throw CliktError("Properties file not found")

@@ -11,10 +11,10 @@ fun Config.create(
     installation: File,
 ) {
     installation.resolve(
-        Constants.CONFIG_FILE
+        Constants.CONFIG_PATH
     ).writeText(Gson().toJson(this))
 
     echo("✔ Config file created")
 
-    installation.tryAddToGitIgnore(Constants.CONFIG_FILE)
+    installation.tryAddToGitIgnore(Constants.CONFIG_PATH)
 }

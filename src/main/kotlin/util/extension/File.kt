@@ -7,6 +7,7 @@ import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
 import com.neo.properties.model.Config
 import com.neo.properties.util.Constants
+import com.neo.properties.util.MapTypeToken
 import java.io.File
 import java.util.*
 
@@ -39,14 +40,31 @@ fun File.asProperties(): Properties {
 context(CliktCommand)
 fun File.getConfig(): Config {
 
-    val configFile = resolve(Constants.CONFIG_FILE)
+    val configFile = resolve(Constants.CONFIG_PATH)
 
     if (!configFile.exists()) {
         throw CliktError("Config file not found")
     }
 
+    return configFile.asConfig()
+}
+
+fun File.asConfig(): Config {
+
     return Gson().fromJson(
-        configFile.readText(),
+        readText(),
         Config::class.java
     )
+}
+
+fun File.readAsMap(): Map<String, String> {
+
+    return Gson().fromJson(
+        readText(),
+        MapTypeToken.type
+    )
+}
+
+fun File.isJson(): Boolean {
+    return extension == ".json"
 }

@@ -1,5 +1,6 @@
 package com.neo.properties.model
 
 data class Config(
-    val properties : String,
+    val targetPath: String,
+    val environmentsPath: String
 )
