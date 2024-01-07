@@ -7,14 +7,12 @@ import com.neo.properties.util.Constants
 import java.io.File
 
 context(CliktCommand)
-fun Config.create(
+fun Config.save(
     installation: File,
 ) {
     installation.resolve(
         Constants.CONFIG_PATH
     ).writeText(Gson().toJson(this))
 
-    echo("✔ Config file created")
 
-    installation.tryAddToGitIgnore(Constants.CONFIG_PATH)
 }

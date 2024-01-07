@@ -7,7 +7,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.google.gson.Gson
-import com.neo.properties.util.extension.asProperties
+import com.neo.properties.util.extension.readAsProperties
 import com.neo.properties.util.extension.getConfig
 import com.neo.properties.util.Constants
 import java.io.File
@@ -46,7 +46,7 @@ class Save : CliktCommand(help = "Save current environment") {
 
         environments.resolve(tag).writeText(
             Gson().toJson(
-                properties.asProperties().toMap()
+                properties.readAsProperties().toMap()
             )
         )
 

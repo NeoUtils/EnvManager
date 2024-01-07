@@ -31,7 +31,7 @@ fun File.tryAddToGitIgnore(path: String) {
     }
 }
 
-fun File.asProperties(): Properties {
+fun File.readAsProperties(): Properties {
     return Properties().apply {
         load(inputStream())
     }

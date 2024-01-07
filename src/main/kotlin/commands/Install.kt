@@ -1,93 +1,82 @@
 package com.neo.properties.commands
 
 import com.github.ajalt.clikt.core.terminal
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.prompt
+import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.mordant.terminal.ConversionResult
+import com.github.ajalt.mordant.terminal.Terminal
+import com.google.gson.Gson
 import com.neo.properties.core.BaseCommand
 import com.neo.properties.model.Config
-import com.neo.properties.util.extension.asProperties
-import com.neo.properties.util.extension.create
+import com.neo.properties.util.extension.readAsProperties
+import com.neo.properties.util.extension.save
 import com.neo.properties.util.extension.tryAddToGitIgnore
 import com.neo.properties.util.Constants
+import com.neo.properties.util.Instructions
+import com.neo.properties.util.extension.promptFile
 import java.io.File
 
+/**
+ * Install environment control
+ * @author Irineu A. Silva
+ */
 class Install : BaseCommand(help = "Install environment control") {
+
+    private val configFile by lazy {
+        path.resolve(Constants.CONFIG_PATH)
+    }
 
     override fun run() {
 
-        createEnvironmentsFolder()
-
-        val properties = getOrCreatePropertiesFile()
-
-        createConfigFile(properties)
-
-        echo("\n✔ Installation complete")
-
-        val count = properties.asProperties().count()
-
-        if (count == 1) {
-            echo("\n! Properties file contains $count properties.")
-            echo("Use \"properties save -[tag]\" to save as an environment.")
-        }
-    }
-
-    private fun createConfigFile(properties: File) {
-        Config(
-            targetPath = properties.absolutePath,
-            environmentsPath = ""
-        ).create(path)
-    }
-
-    private fun createProperties(properties: File) {
-
-        properties.createNewFile()
-        echo("✔ Properties file created")
-
-        path.tryAddToGitIgnore(properties.name)
-    }
-
-    private fun getOrCreatePropertiesFile(): File {
-
-        while (true) {
-            val path = terminal.prompt("\nProperties file")
-
-            if (path.isNullOrEmpty()) {
-                echo("✖ Path cannot be empty", err = true)
-                continue
-            }
-
-            val file = File(path)
-
-            if (file.exists() && file.isDirectory) {
-                echo("✖ Path is not a file", err = true)
-                continue
-            }
-
-            if (file.exists()) {
-                echo("✔ Properties file found")
-            } else {
-                echo("! Properties file not found")
-                createProperties(file)
-            }
-
-            return file
-        }
-    }
-
-    private fun createEnvironmentsFolder() {
-
-        val folder = File(path, Constants.ENVIRONMENT_FOLDER)
-
-        if (folder.exists()) {
-
-            echo("✔ Environment folder found")
-
+        if (configFile.exists()) {
+            echo("✔ Already installed")
+            // TODO: Add option to view and change config
             return
         }
 
-        folder.mkdirs()
-        echo("\n✔ Created environment folder")
+        val config = createConfig()
 
-        path.tryAddToGitIgnore("\\${Constants.ENVIRONMENT_FOLDER}")
+        echo("\n✔ Installation complete")
 
-        return
+        val count = File(config.targetPath).readAsProperties().count()
+
+        if (count == 1) {
+            echo("\n! Properties file contains $count properties.")
+            echo(Instructions.SAVE)
+        }
+    }
+
+    private fun createConfig(): Config {
+
+        val environments = terminal.promptFile(
+            text = "Path to environments",
+            default = path.resolve(Constants.ENVIRONMENT_FOLDER),
+            canBeFile = false
+        )
+
+        echo()
+
+        val target = terminal.promptFile(
+            text = "Path to properties file",
+            mustExist = true,
+            canBeDir = false,
+        )
+
+        val config = Config(
+            targetPath = target.path,
+            environmentsPath = environments.path
+        )
+
+        configFile.writeText(
+            Gson().toJson(
+                config
+            )
+        )
+
+        echo("\n✔ Config file created")
+        path.tryAddToGitIgnore(Constants.CONFIG_PATH)
+
+        return config
     }
 }
