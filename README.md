@@ -15,7 +15,7 @@ Inspired a bit by Git, I thought of the following commands: [install](#install),
 First, you need to install the management in the project folder:
 
 ```bash
-$ properties install
+$ ./properties install
 ```
 
 This will create a configuration file and a folder to store the environments.
@@ -25,7 +25,7 @@ This will create a configuration file and a folder to store the environments.
 With this command, you can save an environment with an associated tag, allowing you to later checkout in it.
 
 ```bash
-$ properties save <tag>
+$ ./properties save <tag>
 ```
 
 ### Checkout
@@ -33,7 +33,7 @@ $ properties save <tag>
 This command allows you to checkout in a saved environment.
 
 ```bash
-$ properties checkout <tag>
+$ ./properties checkout <tag>
 ```
 
 ### List
@@ -41,13 +41,13 @@ $ properties checkout <tag>
 This command allows you to list the saved environments.
 
 ```bash
-$ properties list
+$ ./properties list
 ```
 
 If you specify a tag, the properties associated with it will be displayed.
 
 ```bash
-$ properties list <tag>
+$ ./properties list <tag>
 ```
 
 ### Remove
@@ -55,5 +55,5 @@ $ properties list <tag>
 This command allows you to remove a saved environment.
 
 ```bash
-$ properties remove <tag>
+$ ./properties remove <tag>
 ```

@@ -37,7 +37,7 @@ class Install : CliktCommand(help = "Install environment control") {
         val count = properties.asProperties().count()
 
         if (count == 1) {
-            echo("\n❗ Properties file contains $count properties.")
+            echo("\n! Properties file contains $count properties.")
             echo("Use \"properties save -[tag]\" to save as an environment.")
         }
     }
@@ -76,7 +76,7 @@ class Install : CliktCommand(help = "Install environment control") {
             if (file.exists()) {
                 echo("✔ Properties file found")
             } else {
-                echo("❗ Properties file not found")
+                echo("! Properties file not found")
                 createProperties(file)
             }
 
