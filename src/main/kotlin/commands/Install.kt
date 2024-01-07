@@ -1,16 +1,10 @@
 package com.neo.properties.commands
 
 import com.github.ajalt.clikt.core.terminal
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.prompt
-import com.github.ajalt.clikt.parameters.types.file
-import com.github.ajalt.mordant.terminal.ConversionResult
-import com.github.ajalt.mordant.terminal.Terminal
 import com.google.gson.Gson
 import com.neo.properties.core.BaseCommand
 import com.neo.properties.model.Config
 import com.neo.properties.util.extension.readAsProperties
-import com.neo.properties.util.extension.save
 import com.neo.properties.util.extension.tryAddToGitIgnore
 import com.neo.properties.util.Constants
 import com.neo.properties.util.Instructions
@@ -39,10 +33,17 @@ class Install : BaseCommand(help = "Install environment control") {
 
         echo("\n✔ Installation complete")
 
-        val count = File(config.targetPath).readAsProperties().count()
+        showTips(config)
+    }
 
-        if (count == 1) {
-            echo("\n! Properties file contains $count properties.")
+    private fun showTips(config: Config) {
+
+        val properties = File(
+            config.targetPath
+        ).readAsProperties()
+
+        if (properties.isNotEmpty()) {
+            echo("\n! Your current environment contains ${properties.count()} properties.")
             echo(Instructions.SAVE)
         }
     }
