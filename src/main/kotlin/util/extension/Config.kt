@@ -11,7 +11,7 @@ fun Config.save(
     installation: File,
 ) {
     installation.resolve(
-        Constants.CONFIG_PATH
+        Constants.CONFIG_FILE_PATH
     ).writeText(Gson().toJson(this))
 
 

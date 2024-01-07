@@ -1,11 +1,11 @@
 package com.neo.properties.commands
 
 import com.github.ajalt.clikt.core.terminal
+import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
 import com.neo.properties.core.BaseCommand
 import com.neo.properties.model.Config
 import com.neo.properties.util.extension.readAsProperties
-import com.neo.properties.util.extension.tryAddToGitIgnore
 import com.neo.properties.util.Constants
 import com.neo.properties.util.Instructions
 import com.neo.properties.util.extension.promptFile
@@ -18,7 +18,7 @@ import java.io.File
 class Install : BaseCommand(help = "Install environment control") {
 
     private val configFile by lazy {
-        path.resolve(Constants.CONFIG_PATH)
+        path.resolve(Constants.CONFIG_FILE_PATH)
     }
 
     override fun run() {
@@ -52,7 +52,7 @@ class Install : BaseCommand(help = "Install environment control") {
 
         val environments = terminal.promptFile(
             text = "Path to environments",
-            default = path.resolve(Constants.ENVIRONMENT_FOLDER),
+            default = path.resolve(Constants.DEFAULT_ENVIRONMENT_FOLDER_PATH),
             canBeFile = false
         )
 
@@ -76,8 +76,24 @@ class Install : BaseCommand(help = "Install environment control") {
         )
 
         echo("\n✔ Config file created")
-        path.tryAddToGitIgnore(Constants.CONFIG_PATH)
+
+        addConfigToGitIgnore()
 
         return config
+    }
+
+    private fun addConfigToGitIgnore() {
+
+        val gitignore = path.resolve(Constants.DOT_GITIGNORE)
+
+        if (!gitignore.exists()) return // The project is not versioned in git
+
+        if (gitignore.readLines().contains(Constants.CONFIG_FILE_PATH)) return // Already added
+
+        if (YesNoPrompt("\nAdd config to gitignore?", terminal).ask() == true) {
+
+            gitignore.appendText("\n\n## Properties ##\n${configFile.name}")
+            echo("✔ Added to ${gitignore.name}")
+        }
     }
 }

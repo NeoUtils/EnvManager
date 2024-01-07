@@ -54,7 +54,6 @@ class Lister : BaseCommand(
         }
     }
 
-
     private fun File.showAll() {
 
         val environments = listFiles { _, name ->

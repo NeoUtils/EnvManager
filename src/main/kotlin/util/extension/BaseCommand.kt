@@ -1,7 +1,6 @@
 package com.neo.properties.util.extension
 
 import com.github.ajalt.clikt.core.Abort
-import com.github.ajalt.clikt.core.CliktError
 import com.neo.properties.core.BaseCommand
 import com.neo.properties.util.Instructions
 import com.neo.properties.model.Config
@@ -10,7 +9,7 @@ import errors.NotInstalledError
 
 fun BaseCommand.requireInstall(): Config {
 
-    val configFile = path.resolve(Constants.CONFIG_PATH)
+    val configFile = path.resolve(Constants.CONFIG_FILE_PATH)
 
     if (!configFile.exists()) {
 
