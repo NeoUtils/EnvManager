@@ -77,12 +77,12 @@ class Install : BaseCommand(help = "Install environment control") {
 
         echo("\n✔ Config file created")
 
-        addConfigToGitIgnore()
+        config.withFile().addFilesToGitIgnore()
 
         return config
     }
 
-    private fun addConfigToGitIgnore() {
+    private fun Config.File.addFilesToGitIgnore() {
 
         val gitignore = path.resolve(Constants.DOT_GITIGNORE)
 
@@ -90,10 +90,18 @@ class Install : BaseCommand(help = "Install environment control") {
 
         if (gitignore.readLines().contains(Constants.CONFIG_FILE_PATH)) return // Already added
 
-        if (YesNoPrompt("\nAdd config to gitignore?", terminal).ask() == true) {
+        if (YesNoPrompt("\nAdd created files to gitignore?", terminal).ask() == true) {
 
-            gitignore.appendText("\n\n## Properties ##\n${configFile.name}")
-            echo("✔ Added to ${gitignore.name}")
+            gitignore.appendText(
+                buildString {
+                    append("\n\n")
+                    appendLine("## Properties ##")
+                    appendLine(environments.toRelativeString(path))
+                    append(configFile.toRelativeString(path))
+                }
+            )
+
+            echo("✔ Added to ${gitignore.toRelativeString(path)}")
         }
     }
 }
