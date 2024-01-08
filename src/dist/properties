@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# This is a terminal script to direct commands to Properties.
+
+/usr/local/lib/Properties/bin/Properties "$@"
