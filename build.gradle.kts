@@ -15,7 +15,7 @@ repositories {
 dependencies {
 
     // Gson
-    implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.google.code.gson:gson:2.8.9")
 
     // Clikt
     implementation("com.github.ajalt.clikt:clikt:4.2.1")
