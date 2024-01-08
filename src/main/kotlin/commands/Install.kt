@@ -4,7 +4,7 @@ import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
-import com.neo.properties.core.BaseCommand
+import com.neo.properties.core.Command
 import com.neo.properties.model.Config
 import com.neo.properties.util.extension.readAsProperties
 import com.neo.properties.util.Constants
@@ -16,10 +16,10 @@ import java.io.File
  * Install environment control
  * @author Irineu A. Silva
  */
-class Install : BaseCommand(help = "Install environment control") {
+class Install : Command(help = "Install environment control") {
 
     private val configFile by lazy {
-        path.resolve(Constants.CONFIG_FILE_PATH)
+        pathDir.resolve(Constants.CONFIG_FILE_PATH)
     }
 
     override fun run() {
@@ -53,7 +53,7 @@ class Install : BaseCommand(help = "Install environment control") {
 
         val environments = terminal.promptFile(
             text = "Path to environments",
-            default = path.resolve(Constants.DEFAULT_ENVIRONMENT_FOLDER_PATH),
+            default = pathDir.resolve(Constants.DEFAULT_ENVIRONMENT_FOLDER_PATH),
             canBeFile = false
         )
 
@@ -85,7 +85,7 @@ class Install : BaseCommand(help = "Install environment control") {
 
     private fun Config.File.addFilesToGitIgnore() {
 
-        val gitignore = path.resolve(Constants.DOT_GITIGNORE)
+        val gitignore = pathDir.resolve(Constants.DOT_GITIGNORE)
 
         if (!gitignore.exists()) return // The project is not versioned in git
 
@@ -97,12 +97,12 @@ class Install : BaseCommand(help = "Install environment control") {
                 buildString {
                     append("\n\n")
                     appendLine("## Properties ##")
-                    appendLine(environments.toRelativeString(path))
-                    append(configFile.toRelativeString(path))
+                    appendLine(environments.toRelativeString(pathDir))
+                    append(configFile.toRelativeString(pathDir))
                 }
             )
 
-            echo("✔ Added to ${gitignore.toRelativeString(path)}")
+            echo("✔ Added to ${gitignore.toRelativeString(pathDir)}")
         }
     }
 }

@@ -3,7 +3,7 @@ package com.neo.properties.commands
 import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
-import com.neo.properties.core.BaseCommand
+import com.neo.properties.core.Command
 import com.neo.properties.errors.EnvironmentNotFound
 import com.neo.properties.errors.NoEnvironmentsFound
 import com.neo.properties.util.Constants
@@ -17,7 +17,7 @@ import java.io.File
  * List environments
  * @author Irineu A. Silva
  */
-class Lister : BaseCommand(
+class Lister : Command(
     name = "list",
     help = "List environments"
 ) {

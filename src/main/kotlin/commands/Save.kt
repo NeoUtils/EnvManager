@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
-import com.neo.properties.core.BaseCommand
+import com.neo.properties.core.Command
 import com.neo.properties.errors.TargetNotFound
 import com.neo.properties.util.extension.json
 import com.neo.properties.util.extension.readAsProperties
@@ -15,7 +15,7 @@ import com.neo.properties.util.extension.requireInstall
  * Save current environment command
  * @author Irineu A. Silva
  */
-class Save : BaseCommand(help = "Save current environment") {
+class Save : Command(help = "Save current environment") {
 
     private val tag by argument(
         help = "Tag to save"

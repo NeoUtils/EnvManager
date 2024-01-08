@@ -1,15 +1,19 @@
 package com.neo.properties.util.extension
 
 import com.github.ajalt.clikt.core.Abort
-import com.neo.properties.core.BaseCommand
+import com.github.ajalt.clikt.core.CliktCommand
+import com.neo.properties.core.Command
 import com.neo.properties.util.Instructions
 import com.neo.properties.model.Config
 import com.neo.properties.util.Constants
 import errors.NotInstalledError
+import java.io.File
 
-fun BaseCommand.requireInstall(): Config {
+fun Command.requireInstall(): Config {
 
-    val configFile = path.resolve(Constants.CONFIG_FILE_PATH)
+    val pathDir = checkNotNull(currentContext.findObject<File>())
+
+    val configFile = pathDir.resolve(Constants.CONFIG_FILE_PATH)
 
     if (!configFile.exists()) {
 
