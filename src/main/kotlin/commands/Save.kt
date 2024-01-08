@@ -1,6 +1,9 @@
 package com.neo.properties.commands
 
+import com.github.ajalt.clikt.core.Abort
+import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
 import com.neo.properties.core.BaseCommand
 import com.neo.properties.errors.TargetNotFound
@@ -28,8 +31,21 @@ class Save : BaseCommand(help = "Save current environment") {
 
         if (!environments.exists()) environments.mkdirs()
 
-        environments
-            .resolve(tag.json)
+        val environment = environments.resolve(tag.json)
+
+        if (environment.exists()) {
+
+            val overwritePrompt = YesNoPrompt(prompt = "Overwrite $tag?", terminal)
+
+            if (overwritePrompt.ask() != true) {
+
+                echo("✖ Aborted")
+
+                throw Abort()
+            }
+        }
+
+        environment
             .writeText(
                 Gson().toJson(
                     target.readAsProperties().toMap()
