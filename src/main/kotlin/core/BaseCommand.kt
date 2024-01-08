@@ -12,7 +12,7 @@ abstract class BaseCommand(
 ) : CliktCommand(name = name, help = help) {
 
     val path by option(
-        help = "Path to install"
+        help = "Path of install"
     ).file(
         mustExist = true,
         canBeDir = true,

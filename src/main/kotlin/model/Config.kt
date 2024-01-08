@@ -9,13 +9,13 @@ data class Config(
     fun withFile(): File {
 
         return File(
-            targetPath = JavaFile(targetPath),
-            environmentsPath = JavaFile(environmentsPath)
+            target = JavaFile(targetPath),
+            environments = JavaFile(environmentsPath)
         )
     }
 
     data class File(
-        val targetPath: JavaFile,
-        val environmentsPath: JavaFile
+        val target: JavaFile,
+        val environments: JavaFile
     )
 }
