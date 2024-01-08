@@ -65,7 +65,7 @@ class Lister : BaseCommand(
             echoFormattedHelp(NoEnvironmentsFound())
             echo(Instructions.SAVE)
 
-            return
+            throw Abort()
         }
 
         environments.forEach { environment ->

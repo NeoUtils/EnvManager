@@ -1,5 +1,6 @@
 package com.neo.properties.commands
 
+import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
@@ -26,7 +27,7 @@ class Install : BaseCommand(help = "Install environment control") {
         if (configFile.exists()) {
             echo("✔ Already installed")
             // TODO: Add option to view and change config
-            return
+            throw Abort()
         }
 
         val config = createConfig()
