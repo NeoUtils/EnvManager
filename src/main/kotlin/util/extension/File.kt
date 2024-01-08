@@ -13,7 +13,7 @@ fun File.readAsProperties(): Properties {
     }
 }
 
-fun File.asConfig(): Config {
+fun File.readAsConfig(): Config {
 
     return Gson().fromJson(
         readText(),

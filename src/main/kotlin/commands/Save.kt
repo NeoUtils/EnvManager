@@ -35,7 +35,5 @@ class Save : BaseCommand(help = "Save current environment") {
                     target.readAsProperties().toMap()
                 )
             )
-
-        echo("✔ Properties saved with tag '$tag'")
     }
 }

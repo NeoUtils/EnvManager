@@ -20,5 +20,5 @@ fun BaseCommand.requireInstall(): Config {
         throw Abort()
     }
 
-    return configFile.asConfig()
+    return configFile.readAsConfig()
 }
