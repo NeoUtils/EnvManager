@@ -26,6 +26,8 @@ class Save : BaseCommand(help = "Save current environment") {
             throw TargetNotFound(target.path)
         }
 
+        if (!environments.exists()) environments.mkdirs()
+
         environments
             .resolve(tag.json)
             .writeText(
