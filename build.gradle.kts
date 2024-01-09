@@ -38,6 +38,20 @@ tasks.withType<KotlinCompile>().configureEach {
     }
 }
 
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "${project.group}.MainKt"
+
+        attributes(
+            mapOf(
+                "Implementation-Title" to project.name,
+                "Implementation-Version" to project.version,
+                "Implementation-Vendor" to "NeoUtils",
+            )
+        )
+    }
+}
+
 application {
-    mainClass.set("com.neo.properties.MainKt")
+    mainClass.set("${project.group}.MainKt")
 }
