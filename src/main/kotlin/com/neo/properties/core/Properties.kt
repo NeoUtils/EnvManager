@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
-import com.neo.properties.commands.*
+import com.neo.properties.command.*
 import com.neo.properties.model.Paths
 import java.io.File
 

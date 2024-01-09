@@ -1,13 +1,12 @@
-package com.neo.properties.commands
+package com.neo.properties.command
 
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.neo.properties.core.Command
 import com.neo.properties.error.EnvironmentNotFound
 import com.neo.properties.util.extension.json
 import com.neo.properties.util.extension.requireInstall
-import java.io.File
 
-class Remove: Command(
+class Remove : Command(
     help = "Remove an environment"
 ) {
 

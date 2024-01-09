@@ -1,7 +1,6 @@
 package com.neo.properties.util.extension
 
 import com.github.ajalt.clikt.core.Abort
-import com.github.ajalt.clikt.core.requireObject
 import com.neo.properties.core.Command
 import com.neo.properties.error.NotInstalledError
 import com.neo.properties.model.Config

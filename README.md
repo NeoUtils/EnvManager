@@ -8,7 +8,7 @@ Many projects use environment property files and need to manually swap these pro
 
 ## Proposal
 
-Inspired a bit by Git, I thought of the following commands: [install](#install), [save](#save), [checkout](#checkout), [list](#list), and [remove](#remove).
+Inspired a bit by Git, I thought of the following command: [install](#install), [save](#save), [checkout](#checkout), [list](#list), and [remove](#remove).
 
 ### Install
 

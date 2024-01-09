@@ -1,4 +1,4 @@
-package com.neo.properties.commands
+package com.neo.properties.command
 
 import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal

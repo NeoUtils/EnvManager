@@ -1,8 +1,8 @@
 package com.neo.properties.util.extension
 
 import com.google.gson.Gson
-import com.neo.properties.model.Config
 import com.neo.properties.util.MapTypeToken
+import com.neo.properties.model.Config
 import java.io.File
 import java.util.*
 

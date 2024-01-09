@@ -1,8 +1,8 @@
-package com.neo.properties.commands
+package com.neo.properties.command
 
+import com.neo.properties.error.EnvironmentNotFound
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.neo.properties.core.Command
-import com.neo.properties.error.EnvironmentNotFound
 import com.neo.properties.util.extension.json
 import com.neo.properties.util.extension.readAsMap
 import com.neo.properties.util.extension.requireInstall
