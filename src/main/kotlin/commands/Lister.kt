@@ -4,8 +4,8 @@ import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.neo.properties.core.Command
-import com.neo.properties.errors.EnvironmentNotFound
-import com.neo.properties.errors.NoEnvironmentsFound
+import com.neo.properties.error.EnvironmentNotFound
+import com.neo.properties.error.NoEnvironmentsFound
 import com.neo.properties.util.Constants
 import com.neo.properties.util.Instructions
 import com.neo.properties.util.extension.json

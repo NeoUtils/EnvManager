@@ -1,4 +1,4 @@
-package com.neo.properties.errors
+package com.neo.properties.error
 
 import com.github.ajalt.clikt.core.CliktError
 
