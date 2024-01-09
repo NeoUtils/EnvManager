@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.neo.properties.commands.*
+import com.neo.properties.model.Paths
 import java.io.File
 
 class Properties : CliktCommand(invokeWithoutSubcommand = true) {
@@ -37,6 +38,8 @@ class Properties : CliktCommand(invokeWithoutSubcommand = true) {
 
         if (version) throw PrintCompletionMessage("1.0-DEV")
 
-        currentContext.obj = project
+        currentContext.obj = Paths(
+            projectDir = project
+        )
     }
 }

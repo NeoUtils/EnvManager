@@ -29,6 +29,8 @@ class Lister : Command(
 
         requireInstall()
 
+        val environmentsDir = paths.environmentsDir
+
         val tag = tag ?: run {
             environmentsDir.showAll()
             return

@@ -20,7 +20,7 @@ class Checkout : Command(
 
         val target = File(requireInstall().targetPath)
 
-        val environment = environmentsDir.resolve(tag.json)
+        val environment = paths.environmentsDir.resolve(tag.json)
 
         if (!environment.exists()) {
             throw EnvironmentNotFound(tag)

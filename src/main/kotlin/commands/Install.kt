@@ -19,13 +19,13 @@ class Install : Command(help = "Install environment control") {
 
     override fun run() {
 
-        if (isInstalled()) {
+        if (paths.isInstalled()) {
             echo("✔ Already installed")
             // TODO: Add option to view and change config
             throw Abort()
         }
 
-        installDir.mkdir()
+        paths.installationDir.mkdir()
 
         createGitIgnore()
 
@@ -57,15 +57,15 @@ class Install : Command(help = "Install environment control") {
         return Config(
             targetPath = target.path
         ).also {
-            configFile.writeText(
+            paths.configFile.writeText(
                 Gson().toJson(it)
             )
         }
     }
 
-    private fun createGitIgnore() = with(
-        installDir.resolve(Constants.DOT_GITIGNORE)
-    ) {
-        writeText("*")
+    private fun createGitIgnore() {
+        paths.installationDir
+            .resolve(Constants.DOT_GITIGNORE)
+            .writeText("*")
     }
 }

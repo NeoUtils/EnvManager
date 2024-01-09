@@ -19,7 +19,7 @@ class Remove: Command(
 
         requireInstall()
 
-        val environment = environmentsDir.resolve(tag.json)
+        val environment = paths.environmentsDir.resolve(tag.json)
 
         if (!environment.exists()) {
             throw EnvironmentNotFound(tag)

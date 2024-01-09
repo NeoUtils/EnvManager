@@ -30,6 +30,8 @@ class Save : Command(help = "Save current environment") {
             throw TargetNotFound(target.path)
         }
 
+        val environmentsDir = paths.environmentsDir
+
         if (!environmentsDir.exists()) environmentsDir.mkdirs()
 
         val environment = environmentsDir.resolve(tag.json)
