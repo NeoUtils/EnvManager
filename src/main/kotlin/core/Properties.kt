@@ -15,7 +15,7 @@ class Properties : CliktCommand(invokeWithoutSubcommand = true) {
         help = "Show version"
     ).flag()
 
-    private val path by option(
+    private val project by option(
         help = "Project path"
     ).file(
         mustExist = true,
@@ -37,6 +37,6 @@ class Properties : CliktCommand(invokeWithoutSubcommand = true) {
 
         if (version) throw PrintCompletionMessage("1.0-DEV")
 
-        currentContext.obj = path
+        currentContext.obj = project
     }
 }

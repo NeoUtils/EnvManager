@@ -17,9 +17,9 @@ class Remove: Command(
 
     override fun run() {
 
-        val environments = File(requireInstall().environmentsPath)
+        requireInstall()
 
-        val environment = environments.resolve(tag.json)
+        val environment = environmentsDir.resolve(tag.json)
 
         if (!environment.exists()) {
             throw EnvironmentNotFound(tag)

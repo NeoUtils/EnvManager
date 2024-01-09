@@ -27,7 +27,7 @@ class Lister : Command(
 
     override fun run() {
 
-        val environmentsDir = File(requireInstall().environmentsPath)
+        requireInstall()
 
         val tag = tag ?: run {
             environmentsDir.showAll()

@@ -10,6 +10,7 @@ import com.neo.properties.error.TargetNotFound
 import com.neo.properties.util.extension.json
 import com.neo.properties.util.extension.readAsProperties
 import com.neo.properties.util.extension.requireInstall
+import java.io.File
 
 /**
  * Save current environment command
@@ -23,15 +24,15 @@ class Save : Command(help = "Save current environment") {
 
     override fun run() {
 
-        val (target, environments) = requireInstall().withFile()
+        val target = File(requireInstall().targetPath)
 
         if (!target.exists()) {
             throw TargetNotFound(target.path)
         }
 
-        if (!environments.exists()) environments.mkdirs()
+        if (!environmentsDir.exists()) environmentsDir.mkdirs()
 
-        val environment = environments.resolve(tag.json)
+        val environment = environmentsDir.resolve(tag.json)
 
         if (environment.exists()) {
 

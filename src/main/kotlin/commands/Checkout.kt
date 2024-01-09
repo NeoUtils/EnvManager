@@ -6,20 +6,21 @@ import com.neo.properties.error.EnvironmentNotFound
 import com.neo.properties.util.extension.json
 import com.neo.properties.util.extension.readAsMap
 import com.neo.properties.util.extension.requireInstall
+import java.io.File
 
 class Checkout : Command(
     help = "Checkout an environment"
 ) {
 
     private val tag by argument(
-        help = "Tag to save"
+        help = "Tag of environment"
     )
 
     override fun run() {
 
-        val (target, environments) = requireInstall().withFile()
+        val target = File(requireInstall().targetPath)
 
-        val environment = environments.resolve(tag.json)
+        val environment = environmentsDir.resolve(tag.json)
 
         if (!environment.exists()) {
             throw EnvironmentNotFound(tag)
