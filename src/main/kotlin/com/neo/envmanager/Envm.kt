@@ -1,4 +1,4 @@
-package com.neo.envmanager.core
+package com.neo.envmanager
 
 import com.github.ajalt.clikt.core.*
 import com.github.ajalt.clikt.parameters.options.default
@@ -9,8 +9,7 @@ import com.neo.envmanager.command.*
 import com.neo.envmanager.model.Paths
 import java.io.File
 
-class Start : CliktCommand(
-    name = "envm",
+class Envm : CliktCommand(
     invokeWithoutSubcommand = true,
     printHelpOnEmptyArgs = true
 ) {
