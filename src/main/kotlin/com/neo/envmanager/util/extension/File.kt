@@ -1,8 +1,8 @@
-package com.neo.properties.util.extension
+package com.neo.envmanager.util.extension
 
 import com.google.gson.Gson
-import com.neo.properties.util.MapTypeToken
-import com.neo.properties.model.Config
+import com.neo.envmanager.util.MapTypeToken
+import com.neo.envmanager.model.Config
 import java.io.File
 import java.util.*
 

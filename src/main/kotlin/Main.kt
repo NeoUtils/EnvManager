@@ -1,5 +1,5 @@
-package com.neo.properties
+package com.neo.envmanager
 
-import com.neo.properties.core.Properties
+import com.neo.envmanager.core.Start
 
-fun main(args: Array<String>) = Properties().main(args)
+fun main(args: Array<String>) = Start().main(args)

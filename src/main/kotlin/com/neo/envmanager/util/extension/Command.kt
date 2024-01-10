@@ -1,11 +1,11 @@
-package com.neo.properties.util.extension
+package com.neo.envmanager.util.extension
 
 import com.github.ajalt.clikt.core.Abort
-import com.neo.properties.core.Command
-import com.neo.properties.error.NotInstalledError
-import com.neo.properties.model.Config
-import com.neo.properties.model.Paths
-import com.neo.properties.util.Instructions
+import com.neo.envmanager.core.Command
+import com.neo.envmanager.error.NotInstalledError
+import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Paths
+import com.neo.envmanager.util.Instructions
 
 fun Command.requireInstall(): Config {
 

@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run with args" type="JetRunConfigurationType">
-    <option name="MAIN_CLASS_NAME" value="com.neo.properties.MainKt" />
-    <module name="Properties.main" />
+    <option name="MAIN_CLASS_NAME" value="com.neo.envmanager.MainKt" />
+    <module name="EnvManager.main" />
     <option name="PROGRAM_PARAMETERS" value="$Prompt$" />
     <shortenClasspath name="NONE" />
     <method v="2">

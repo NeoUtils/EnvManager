@@ -1,4 +1,4 @@
-package com.neo.properties.util.extension
+package com.neo.envmanager.util.extension
 
 import com.github.ajalt.mordant.terminal.ConversionResult
 import com.github.ajalt.mordant.terminal.Terminal

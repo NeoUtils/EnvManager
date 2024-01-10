@@ -1,6 +1,6 @@
-package com.neo.properties.model
+package com.neo.envmanager.model
 
-import com.neo.properties.util.Constants
+import com.neo.envmanager.util.Constants
 import java.io.File
 
 class Paths(

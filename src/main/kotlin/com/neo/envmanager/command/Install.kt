@@ -1,14 +1,14 @@
-package com.neo.properties.command
+package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.google.gson.Gson
-import com.neo.properties.util.Constants
-import com.neo.properties.util.Instructions
-import com.neo.properties.util.extension.promptFile
-import com.neo.properties.core.Command
-import com.neo.properties.util.extension.readAsProperties
-import com.neo.properties.model.Config
+import com.neo.envmanager.util.Constants
+import com.neo.envmanager.util.Instructions
+import com.neo.envmanager.util.extension.promptFile
+import com.neo.envmanager.core.Command
+import com.neo.envmanager.util.extension.readAsProperties
+import com.neo.envmanager.model.Config
 import java.io.File
 
 /**

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# This is a terminal script to direct commands to EnvManager.
+
+/usr/local/lib/com.neo.envmanager/bin/EnvManager "$@"

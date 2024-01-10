@@ -1,4 +1,4 @@
-package com.neo.properties.util
+package com.neo.envmanager.util
 
 import com.google.gson.reflect.TypeToken
 

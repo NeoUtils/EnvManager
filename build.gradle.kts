@@ -5,7 +5,7 @@ plugins {
     id("application")
 }
 
-group = "com.neo.properties"
+group = "com.neo.envmanager"
 version = "1.0-DEV"
 
 repositories {

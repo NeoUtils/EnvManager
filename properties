@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-# Use this script to test Properties from the command line.
-# Use ./gradlew installDist to generate the bin files.
-
-./build/install/Properties/bin/Properties "$@"

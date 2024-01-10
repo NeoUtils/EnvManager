@@ -1,10 +1,10 @@
-package com.neo.properties.command
+package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.neo.properties.core.Command
-import com.neo.properties.error.EnvironmentNotFound
-import com.neo.properties.util.extension.json
-import com.neo.properties.util.extension.requireInstall
+import com.neo.envmanager.core.Command
+import com.neo.envmanager.error.EnvironmentNotFound
+import com.neo.envmanager.util.extension.json
+import com.neo.envmanager.util.extension.requireInstall
 
 class Remove : Command(
     help = "Remove an environment"

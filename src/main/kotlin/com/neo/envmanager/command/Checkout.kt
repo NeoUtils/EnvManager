@@ -1,11 +1,11 @@
-package com.neo.properties.command
+package com.neo.envmanager.command
 
-import com.neo.properties.error.EnvironmentNotFound
+import com.neo.envmanager.error.EnvironmentNotFound
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.neo.properties.core.Command
-import com.neo.properties.util.extension.json
-import com.neo.properties.util.extension.readAsMap
-import com.neo.properties.util.extension.requireInstall
+import com.neo.envmanager.core.Command
+import com.neo.envmanager.util.extension.json
+import com.neo.envmanager.util.extension.readAsMap
+import com.neo.envmanager.util.extension.requireInstall
 import java.io.File
 
 class Checkout : Command(

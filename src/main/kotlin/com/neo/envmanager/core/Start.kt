@@ -1,15 +1,18 @@
-package com.neo.properties.core
+package com.neo.envmanager.core
 
 import com.github.ajalt.clikt.core.*
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
-import com.neo.properties.command.*
-import com.neo.properties.model.Paths
+import com.neo.envmanager.command.*
+import com.neo.envmanager.model.Paths
 import java.io.File
 
-class Properties : CliktCommand(invokeWithoutSubcommand = true) {
+class Start : CliktCommand(
+    name = "envm",
+    invokeWithoutSubcommand = true
+) {
 
     private val version by option(
         names = arrayOf("-v", "--version"),

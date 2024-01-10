@@ -1,8 +1,8 @@
-package com.neo.properties.core
+package com.neo.envmanager.core
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.requireObject
-import com.neo.properties.model.Paths
+import com.neo.envmanager.model.Paths
 
 abstract class Command(
     name: String? = null,
