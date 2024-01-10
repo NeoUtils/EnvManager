@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
+import com.neo.envmanager.util.Package
 import com.neo.envmanager.command.*
 import com.neo.envmanager.model.Paths
 import java.io.File
@@ -39,7 +40,7 @@ class Envm : CliktCommand(
 
     override fun run() {
 
-        if (version) throw PrintCompletionMessage("1.0-DEV")
+        if (version) throw PrintCompletionMessage(Package.version)
 
         currentContext.obj = Paths(
             projectDir = project
