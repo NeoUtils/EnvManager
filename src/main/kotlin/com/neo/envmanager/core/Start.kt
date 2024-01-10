@@ -11,7 +11,8 @@ import java.io.File
 
 class Start : CliktCommand(
     name = "envm",
-    invokeWithoutSubcommand = true
+    invokeWithoutSubcommand = true,
+    printHelpOnEmptyArgs = true
 ) {
 
     private val version by option(
