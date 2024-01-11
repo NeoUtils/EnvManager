@@ -1,17 +1,20 @@
 package com.neo.envmanager.command
 
-import com.neo.envmanager.error.EnvironmentNotFound
 import com.github.ajalt.clikt.core.Abort
+import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
+import com.github.ajalt.mordant.rendering.TextStyle
+import com.neo.envmanager.core.Command
+import com.neo.envmanager.error.EnvironmentNotFound
+import com.neo.envmanager.error.NoEnvironmentsFound
+import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.StyledText
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
-import com.neo.envmanager.core.Command
-import com.neo.envmanager.error.NoEnvironmentsFound
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
-import java.io.File
 
 /**
  * List environments
@@ -25,23 +28,25 @@ class Lister : Command(
         help = "Environment tag"
     ).optional()
 
+    private lateinit var config: Config
+
     override fun run() {
 
-        requireInstall()
-
-        val environmentsDir = paths.environmentsDir
+        config = requireInstall()
 
         val tag = tag ?: run {
-            environmentsDir.showAll()
+
+            showEnvironmentsAll()
+
             return
         }
 
-        environmentsDir.showByTag(tag)
+        showEnvironmentByTag(tag)
     }
 
-    private fun File.showByTag(tag: String) {
+    private fun showEnvironmentByTag(tag: String) {
 
-        val environment = resolve(tag.json)
+        val environment = paths.environmentsDir.resolve(tag.json)
 
         if (!environment.exists()) {
 
@@ -56,9 +61,9 @@ class Lister : Command(
         }
     }
 
-    private fun File.showAll() {
+    private fun showEnvironmentsAll() {
 
-        val environments = listFiles { _, name ->
+        val environments = paths.environmentsDir.listFiles { _, name ->
             name.endsWith(Constants.DOT_JSON)
         }
 
@@ -71,7 +76,17 @@ class Lister : Command(
         }
 
         environments.forEach { environment ->
-            echo(environment.nameWithoutExtension)
+
+            val name = environment.nameWithoutExtension
+
+            terminal.println(
+                StyledText(
+                    name,
+                    TextStyle(
+                        bold = name == config.currentEnv
+                    )
+                )
+            )
         }
     }
 }
