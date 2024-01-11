@@ -2,6 +2,7 @@ package com.neo.envmanager.command
 
 import com.neo.envmanager.error.EnvironmentNotFound
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.google.gson.Gson
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
@@ -18,7 +19,9 @@ class Checkout : Command(
 
     override fun run() {
 
-        val target = File(requireInstall().targetPath)
+        val config = requireInstall()
+
+        val target = File(config.targetPath)
 
         val environment = paths.environmentsDir.resolve(tag.json)
 
@@ -31,6 +34,14 @@ class Checkout : Command(
                 .readAsMap()
                 .entries
                 .joinToString(separator = "\n")
+        )
+
+        paths.configFile.writeText(
+            Gson().toJson(
+                config.copy(
+                    currentEnv = tag
+                )
+            )
         )
     }
 }

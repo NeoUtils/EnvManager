@@ -7,4 +7,6 @@ object Constants {
 
     const val DOT_JSON = ".json"
     const val DOT_GITIGNORE = ".gitignore"
+
+    const val PROPERTY_SEPARATOR = " : "
 }
