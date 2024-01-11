@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 
-# Local paths
-LOCAL_BIN_PATH="/usr/local/bin"
-LOCAL_LIB_PATH="/usr/local/lib"
+# Identify system
+if [ -n "$PREFIX" ] && [ -d "$PREFIX/bin" ]; then
+  echo "Uninstalling from Termux on Android"
+  INSTALLATION_PATH="$PREFIX" # For Termux on Android
+else
+  echo "Uninstalling from GNU/Linux"
+  INSTALLATION_PATH="/usr/local" # GNU/Linux
+fi
 
-sudo rm -rf "$LOCAL_LIB_PATH/com.neo.envmanager"
-sudo rm -f "$LOCAL_BIN_PATH/envm"
+# Paths
+BIN_PATH="$INSTALLATION_PATH/bin"
+LIB_PATH="$INSTALLATION_PATH/lib"
+
+# Remove program files
+sudo rm -rf "$LIB_PATH/com.neo.envmanager"
+
+# Remove executable
+sudo rm -f "$BIN_PATH/envm"
 
 echo "✔ Uninstalled"

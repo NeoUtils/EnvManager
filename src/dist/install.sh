@@ -1,22 +1,29 @@
 #!/usr/bin/env bash
 
-# Local paths
-LOCAL_BIN_PATH="/usr/local/bin"
-LOCAL_LIB_PATH="/usr/local/lib"
+# Identify system
+if [ -n "$PREFIX" ] && [ -d "$PREFIX/bin" ]; then
+  echo "Installing for Termux on Android"
+  INSTALLATION_PATH="$PREFIX" # For Termux on Android
+else
+  echo "Installing for GNU/Linux"
+  INSTALLATION_PATH="/usr/local" # GNU/Linux
+fi
 
-# Destination paths
-DEST="$LOCAL_LIB_PATH/com.neo.envmanager"
-DEST_BIN="$DEST/bin"
-DEST_LIB="$DEST/lib"
+# Paths
+BIN_PATH="$INSTALLATION_PATH/bin"
+LIB_PATH="$INSTALLATION_PATH/lib"
 
-# Program files
-sudo mkdir -p "$DEST_BIN"
-sudo mkdir -p "$DEST_LIB"
+# Copy program files
 
-sudo cp -r "./bin" "$DEST"
-sudo cp -r "./lib" "$DEST"
+PACKAGE="com.neo.envmanager"
 
-# Terminal executable
-sudo cp "./envm" "$LOCAL_BIN_PATH"
+sudo mkdir -p "$LIB_PATH/$PACKAGE/bin"
+sudo mkdir -p "$LIB_PATH/$PACKAGE/lib"
+
+sudo cp -r "./bin" "$LIB_PATH/$PACKAGE"
+sudo cp -r "./lib" "$LIB_PATH/$PACKAGE"
+
+# Copy executable
+sudo cp "./envm" "$BIN_PATH"
 
 echo "✔ Installed"
