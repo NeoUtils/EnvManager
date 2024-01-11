@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
-# Check if the script is run as root
-if [ "$(id -u)" != "0" ]; then
-   echo "Root privileges required to uninstall"
-   exit 1
-fi
-
 # Identify system
 if [ -n "$PREFIX" ] && [ -d "$PREFIX/bin" ]; then
   echo "Uninstalling from Termux on Android"
   INSTALLATION_PATH="$PREFIX" # For Termux on Android
 else
   echo "Uninstalling from GNU/Linux"
+
+  # Check if the script is run as root
+  if [ "$(id -u)" != "0" ]; then
+     echo "Root privileges required to uninstall"
+     exit 1
+  fi
+
   INSTALLATION_PATH="/usr/local" # GNU/Linux
 fi
 
