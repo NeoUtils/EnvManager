@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Check if the script is run as root
+if [ "$(id -u)" != "0" ]; then
+   echo "Root privileges required to install"
+   exit 1
+fi
+
 # Identify system
 if [ -n "$PREFIX" ] && [ -d "$PREFIX/bin" ]; then
   echo "Installing for Termux on Android"
@@ -10,6 +16,7 @@ else
 fi
 
 # Paths
+
 BIN_PATH="$INSTALLATION_PATH/bin"
 LIB_PATH="$INSTALLATION_PATH/lib"
 
@@ -17,13 +24,13 @@ LIB_PATH="$INSTALLATION_PATH/lib"
 
 PACKAGE="com.neo.envmanager"
 
-sudo mkdir -p "$LIB_PATH/$PACKAGE/bin"
-sudo mkdir -p "$LIB_PATH/$PACKAGE/lib"
+mkdir -p "$LIB_PATH/$PACKAGE/bin"
+mkdir -p "$LIB_PATH/$PACKAGE/lib"
 
-sudo cp -r "./bin" "$LIB_PATH/$PACKAGE"
-sudo cp -r "./lib" "$LIB_PATH/$PACKAGE"
+cp -r "./bin" "$LIB_PATH/$PACKAGE"
+cp -r "./lib" "$LIB_PATH/$PACKAGE"
 
 # Copy executable
-sudo cp "./envm" "$BIN_PATH"
+cp "./envm" "$BIN_PATH"
 
 echo "✔ Installed"
