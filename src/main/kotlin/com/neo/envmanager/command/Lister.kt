@@ -15,6 +15,7 @@ import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.spansOf
 
 /**
  * List environments
@@ -57,7 +58,15 @@ class Lister : Command(
         }
 
         environment.readAsMap().forEach { (key, value) ->
-            echo("$key = $value")
+            terminal.println(
+                StyledText(
+                    spansOf(
+                        key to TextStyle(),
+                        Constants.PROPERTY_SEPARATOR to TextStyle(),
+                        value to TextStyle(dim = true)
+                    )
+                )
+            )
         }
     }
 
