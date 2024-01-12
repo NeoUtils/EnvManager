@@ -1,13 +1,15 @@
 package com.neo.envmanager
 
-import com.github.ajalt.clikt.core.*
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.PrintCompletionMessage
+import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
-import com.neo.envmanager.util.Package
 import com.neo.envmanager.command.*
 import com.neo.envmanager.model.Paths
+import com.neo.envmanager.util.Package
 import java.io.File
 
 class Envm : CliktCommand(
@@ -35,7 +37,8 @@ class Envm : CliktCommand(
             Save(),
             Lister(),
             Checkout(),
-            Remove()
+            Remove(),
+            Rename()
         )
     }
 

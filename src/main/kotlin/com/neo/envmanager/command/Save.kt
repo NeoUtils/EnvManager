@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
+import com.neo.envmanager.com.neo.envmanager.exception.error.EnvironmentAlreadyExists
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
@@ -41,6 +42,9 @@ class Save : Command(help = "Save current environment") {
         val environment = environmentsDir.resolve(tag.json)
 
         if (environment.exists()) {
+
+            // Show warning only when specifying environment
+            if (this.tag != null) echo("! Environment $tag already exists")
 
             val overwritePrompt = YesNoPrompt(prompt = "Overwrite $tag?", terminal)
 
