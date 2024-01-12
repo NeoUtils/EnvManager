@@ -1,13 +1,12 @@
 package com.neo.envmanager.command
 
-import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.widgets.Text
 import com.neo.envmanager.core.Command
-import com.neo.envmanager.error.EnvironmentNotFound
-import com.neo.envmanager.error.NoEnvironmentsFound
+import com.neo.envmanager.exception.error.EnvironmentNotFound
+import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
@@ -51,12 +50,12 @@ class Lister : Command(
             echoFormattedHelp(EnvironmentNotFound(tag))
             echo(Instructions.SAVE)
 
-            throw Abort()
+            return
         }
 
         environment.readAsMap().forEach { (key, value) ->
 
-            val property = key +
+        val property = key +
                     Constants.PROPERTY_SEPARATOR +
                     TextStyles.dim(value)
 
@@ -75,7 +74,7 @@ class Lister : Command(
             echoFormattedHelp(NoEnvironmentsFound())
             echo(Instructions.SAVE)
 
-            throw Abort()
+            return
         }
 
         environments.forEach { environment ->

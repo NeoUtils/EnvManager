@@ -1,9 +1,8 @@
 package com.neo.envmanager.command
 
-import com.neo.envmanager.error.EnvironmentNotFound
-import com.github.ajalt.clikt.parameters.arguments.argument
 import com.google.gson.Gson
 import com.neo.envmanager.core.Command
+import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall

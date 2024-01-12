@@ -9,6 +9,7 @@ import com.neo.envmanager.util.extension.promptFile
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.util.extension.readAsProperties
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.util.extension.success
 import java.io.File
 
 /**
@@ -20,7 +21,7 @@ class Install : Command(help = "Install environment control") {
     override fun run() {
 
         if (paths.isInstalled()) {
-            echo("✔ Already installed")
+            echo(success(text = "Already installed"))
             throw Abort()
         }
 
@@ -33,14 +34,16 @@ class Install : Command(help = "Install environment control") {
 
     private fun finished(config: Config) {
 
-        echo("\n✔ Installation complete")
+        echo()
+        echo(success(text = "Installed"))
 
         val properties = File(
             config.targetPath
         ).readAsProperties()
 
         if (properties.isNotEmpty()) {
-            echo("\n! ${properties.count()} properties found.")
+            terminal.println()
+            echo(message = "! ${properties.count()} properties found.")
             echo(Instructions.SAVE)
         }
     }

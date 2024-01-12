@@ -1,16 +1,13 @@
 package com.neo.envmanager.command
 
-import com.github.ajalt.clikt.core.Abort
-import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.core.terminal
-import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.arguments.default
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
 import com.neo.envmanager.core.Command
-import com.neo.envmanager.error.SpecifyEnvironmentError
-import com.neo.envmanager.error.TargetNotFound
+import com.neo.envmanager.exception.Cancel
+import com.neo.envmanager.exception.error.SpecifyEnvironmentError
+import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsProperties
 import com.neo.envmanager.util.extension.requireInstall
@@ -47,12 +44,7 @@ class Save : Command(help = "Save current environment") {
 
             val overwritePrompt = YesNoPrompt(prompt = "Overwrite $tag?", terminal)
 
-            if (overwritePrompt.ask() != true) {
-
-                echo("✖ Aborted")
-
-                throw Abort()
-            }
+            if (overwritePrompt.ask() != true) throw Cancel()
         }
 
         environment
