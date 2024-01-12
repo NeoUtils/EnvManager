@@ -21,7 +21,6 @@ class Install : Command(help = "Install environment control") {
 
         if (paths.isInstalled()) {
             echo("✔ Already installed")
-            // TODO: Add option to view and change config
             throw Abort()
         }
 
