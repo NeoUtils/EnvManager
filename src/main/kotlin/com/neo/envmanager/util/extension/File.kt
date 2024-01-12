@@ -28,3 +28,5 @@ fun File.readAsMap(): Map<String, String> {
         MapTypeToken.type
     )
 }
+
+fun File.deleteChildren() = listFiles()?.forEach { it.deleteRecursively() }
