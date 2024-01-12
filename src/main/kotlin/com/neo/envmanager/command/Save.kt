@@ -14,6 +14,7 @@ import com.neo.envmanager.error.TargetNotFound
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsProperties
 import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.extension.tag
 import java.io.File
 
 /**
@@ -22,9 +23,7 @@ import java.io.File
  */
 class Save : Command(help = "Save current environment") {
 
-    private val tag by argument(
-        help = "Environment tag"
-    ).optional()
+    private val tag by tag().optional()
 
     override fun run() {
 

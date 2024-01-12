@@ -7,15 +7,14 @@ import com.neo.envmanager.core.Command
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.extension.tag
 import java.io.File
 
 class Checkout : Command(
     help = "Checkout an environment"
 ) {
 
-    private val tag by argument(
-        help = "Tag of environment"
-    )
+    private val tag by tag()
 
     override fun run() {
 

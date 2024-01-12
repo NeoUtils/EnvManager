@@ -15,6 +15,7 @@ import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.extension.tag
 import com.neo.envmanager.util.spansOf
 
 /**
@@ -25,9 +26,7 @@ class Lister : Command(
     name = "list",
     help = "List environments"
 ) {
-    private val tag by argument(
-        help = "Environment tag"
-    ).optional()
+    private val tag by tag().optional()
 
     private lateinit var config: Config
 

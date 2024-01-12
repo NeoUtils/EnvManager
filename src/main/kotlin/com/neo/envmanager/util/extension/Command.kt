@@ -1,6 +1,7 @@
 package com.neo.envmanager.util.extension
 
 import com.github.ajalt.clikt.core.Abort
+import com.github.ajalt.clikt.parameters.arguments.argument
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.error.NotInstalledError
 import com.neo.envmanager.model.Config
@@ -22,3 +23,8 @@ fun Command.requireInstall(): Config {
 
     return paths.configFile.readAsConfig()
 }
+
+fun Command.tag() = argument(
+    name = "tag",
+    help = "Environment tag"
+)
