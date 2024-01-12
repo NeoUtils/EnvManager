@@ -17,11 +17,12 @@ class Envm : CliktCommand(
 
     private val version by option(
         names = arrayOf("-v", "--version"),
-        help = "Show version"
+        help = "Show version and exit"
     ).flag()
 
-    private val project by option(
-        help = "Project path"
+    private val projectDir by option(
+        names = arrayOf("-p", "--path"),
+        help = "Project directory"
     ).file(
         mustExist = true,
         canBeDir = true,
@@ -43,7 +44,7 @@ class Envm : CliktCommand(
         if (version) throw PrintCompletionMessage(Package.version)
 
         currentContext.obj = Paths(
-            projectDir = project
+            projectDir = projectDir
         )
     }
 }
