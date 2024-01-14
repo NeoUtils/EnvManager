@@ -46,6 +46,6 @@ class Remove : Command(
 
         paths.environmentsDir.deleteChildren()
 
-        echo(success(text = "All environments removed"))
+        echo(terminal.theme.dangerSymbol(text = "All environments removed"))
     }
 }

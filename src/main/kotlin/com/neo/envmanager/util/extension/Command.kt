@@ -1,8 +1,10 @@
 package com.neo.envmanager.util.extension
 
 import com.github.ajalt.clikt.core.Abort
-import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.mordant.rendering.TextStyle
+import com.github.ajalt.mordant.rendering.Theme
+import com.neo.envmanager.com.neo.envmanager.model.Platform
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.error.NotInstalledError
 import com.neo.envmanager.model.Config
@@ -30,6 +32,20 @@ fun Command.tag() = argument(
     help = "Environment tag"
 )
 
-fun Command.success(
+fun Theme.successSymbol(
     text: String
-) = terminal.theme.success(text = "✓ $text")
+) = success(
+    text = when(Platform()) {
+        Platform.LINUX -> "✓ $text"
+        else -> text
+    }
+)
+
+fun Theme.dangerSymbol(
+    text: String
+) = danger(
+    text = when(Platform()) {
+        Platform.LINUX -> "✕ $text"
+        else -> text
+    }
+)
