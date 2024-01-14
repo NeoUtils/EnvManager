@@ -1,22 +1,41 @@
 #!/usr/bin/env bash
 
-# Local paths
-LOCAL_BIN_PATH="/usr/local/bin"
-LOCAL_LIB_PATH="/usr/local/lib"
+# Identify system
+if [ -n "$PREFIX" ] && [ -d "$PREFIX/bin" ]; then
+  echo "Installing for Termux on Android"
+  INSTALLATION_PATH="$PREFIX" # For Termux on Android
+else
+  echo "Installing for GNU/Linux"
 
-# Destination paths
-DEST="$LOCAL_LIB_PATH/com.neo.envmanager"
-DEST_BIN="$DEST/bin"
-DEST_LIB="$DEST/lib"
+  # Check if the script is run as root
+  if [ "$(id -u)" != "0" ]; then
+     echo "Root privileges required to install"
+     exit 1
+  fi
 
-# Program files
-sudo mkdir -p "$DEST_BIN"
-sudo mkdir -p "$DEST_LIB"
+  INSTALLATION_PATH="/usr/local" # GNU/Linux
+fi
 
-sudo cp -r "./bin" "$DEST"
-sudo cp -r "./lib" "$DEST"
+# Paths
 
-# Terminal executable
-sudo cp "./envm" "$LOCAL_BIN_PATH"
+BIN_PATH="$INSTALLATION_PATH/bin"
+LIB_PATH="$INSTALLATION_PATH/lib"
+
+# Copy program files
+
+PACKAGE="com.neo.envmanager"
+
+mkdir -p "$LIB_PATH/$PACKAGE/bin"
+mkdir -p "$LIB_PATH/$PACKAGE/lib"
+
+cp "./bin/EnvManager" "$LIB_PATH/$PACKAGE/bin"
+cp -r "./lib" "$LIB_PATH/$PACKAGE"
+
+# Copy executable
+cp "./envm" "$BIN_PATH"
+
+# Make executable
+chmod +x "$BIN_PATH/envm"
+chmod +x "$LIB_PATH/$PACKAGE/bin/EnvManager"
 
 echo "✔ Installed"
