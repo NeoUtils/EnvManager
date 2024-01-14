@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script installs EnvManager on Linux systems.
+# Execute in a terminal with administrator permissions.
+
 # Local paths
 LOCAL_BIN_PATH="/usr/local/bin"
 LOCAL_LIB_PATH="/usr/local/lib"
@@ -19,4 +22,4 @@ sudo cp -r "./lib" "$DEST"
 # Terminal executable
 sudo cp "./envm" "$LOCAL_BIN_PATH"
 
-echo "✔ Installed"
+echo "✓ Installed"
