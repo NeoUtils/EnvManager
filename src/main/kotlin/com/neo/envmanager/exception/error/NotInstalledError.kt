@@ -6,5 +6,5 @@ import com.github.ajalt.mordant.rendering.Theme
 class NotInstalledError(
     theme: Theme = Theme.Default
 ) : CliktError(
-    theme.danger(text = "✖ Not installed")
+    theme.danger(text = "✕ Not installed")
 )

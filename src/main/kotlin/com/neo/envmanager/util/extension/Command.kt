@@ -32,4 +32,4 @@ fun Command.tag() = argument(
 
 fun Command.success(
     text: String
-) = terminal.theme.success(text = "✔ $text")
+) = terminal.theme.success(text = "✓ $text")

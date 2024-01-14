@@ -6,5 +6,5 @@ import com.github.ajalt.mordant.rendering.Theme
 class NoEnvironmentsFound(
     theme: Theme = Theme.Default
 ) : CliktError(
-    theme.danger(text = "✖ No environments found")
+    theme.danger(text = "✕ No environments found")
 )

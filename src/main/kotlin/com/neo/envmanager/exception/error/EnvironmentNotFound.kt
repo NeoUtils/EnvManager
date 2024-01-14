@@ -7,5 +7,5 @@ class EnvironmentNotFound(
     tag: String,
     theme: Theme = Theme.Default
 ) : CliktError(
-    theme.danger(text = "✖ Environment '$tag' not found")
+    theme.danger(text = "✕ Environment '$tag' not found")
 )

@@ -6,6 +6,6 @@ import com.github.ajalt.mordant.rendering.Theme
 class Cancel(
     theme: Theme = Theme.Default
 ) : CliktError(
-    theme.danger(text = "✖ Canceled"),
+    theme.danger(text = "✕ Canceled"),
     printError = false
 )
