@@ -1,5 +1,6 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.mordant.rendering.TextStyles
@@ -50,7 +51,7 @@ class Lister : Command(
             echoFormattedHelp(EnvironmentNotFound(tag))
             echo(Instructions.SAVE)
 
-            return
+            throw Abort()
         }
 
         environment.readAsMap().forEach { (key, value) ->
@@ -74,7 +75,7 @@ class Lister : Command(
             echoFormattedHelp(NoEnvironmentsFound())
             echo(Instructions.SAVE)
 
-            return
+            throw Abort()
         }
 
         environments.forEach { environment ->
