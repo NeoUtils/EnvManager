@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Use this script to test EnvManager from the command line.
-# Use ./gradlew installDist to generate the bin files.
+# Use this script to test EnvManager on Linux systems from the command line.
+# Use "./envm <options> <command> <args>" to test.
+# Use "./gradlew installDist" to generate the bin files.
 
 ./build/install/EnvManager/bin/EnvManager "$@"
