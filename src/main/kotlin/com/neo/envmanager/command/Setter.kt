@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
+import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.*
@@ -32,9 +33,9 @@ class Setter : Command(
         help = "Set properties to all environments"
     ).flag()
 
-    private val noSave by option(
-        names = arrayOf("-n", "--no-save"),
-        help = "Do not save properties to environment"
+    private val targetOnly by option(
+        names = arrayOf("-t", "--target-only"),
+        help = "Set properties to target only"
     ).flag()
 
     private lateinit var config: Config
@@ -43,9 +44,10 @@ class Setter : Command(
 
         config = requireInstall()
 
-        saveInTarget()
-
-        if (noSave) return
+        if (targetOnly) {
+            saveInTarget()
+            return
+        }
 
         if (all) {
             saveInAllEnvironments()
@@ -56,7 +58,12 @@ class Setter : Command(
     }
 
     private fun saveInTarget() {
+
         val target = File(config.targetPath)
+
+        if (!target.exists()) {
+            throw TargetNotFound(target.path)
+        }
 
         val updatedProperties = target.readAsProperties() + properties
 
@@ -90,6 +97,8 @@ class Setter : Command(
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
         val environment = paths.environmentsDir.resolve(tag.json)
+
+        if (!environment.exists()) environment.mkdir()
 
         environment.writeText(
             Gson().toJson(
