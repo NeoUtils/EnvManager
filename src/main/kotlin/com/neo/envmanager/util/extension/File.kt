@@ -23,10 +23,14 @@ fun File.readAsConfig(): Config {
 
 fun File.readAsMap(): Map<String, String> {
 
-    return Gson().fromJson(
-        readText(),
-        MapTypeToken.type
-    )
+    return runCatching<Map<String, String>> {
+        Gson().fromJson(
+            readText(),
+            MapTypeToken.type
+        )
+    }.getOrElse {
+        emptyMap()
+    }
 }
 
 fun File.deleteChildren() = listFiles()?.forEach { it.deleteRecursively() }
