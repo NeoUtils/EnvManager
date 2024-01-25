@@ -46,10 +46,9 @@ class Save : Command(help = "Save current environment") {
             if (!exists()) mkdirs()
         }.resolve(tag.json)
 
-        if (environment.exists()) {
+        if (environment.exists() && this.tag != null) {
 
-            // Show warning only when specifying environment
-            if (this.tag != null) echo("! Environment $tag already exists")
+            echo("! Environment $tag already exists")
 
             val overwritePrompt = YesNoPrompt(prompt = "Overwrite $tag?", terminal)
 
