@@ -38,7 +38,8 @@ class Envm : CliktCommand(
             Lister(),
             Checkout(),
             Remove(),
-            Rename()
+            Rename(),
+            Setter()
         )
     }
 
