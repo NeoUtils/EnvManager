@@ -12,10 +12,7 @@ import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.model.Config
-import com.neo.envmanager.util.extension.json
-import com.neo.envmanager.util.extension.readAsProperties
-import com.neo.envmanager.util.extension.requireInstall
-import com.neo.envmanager.util.extension.tag
+import com.neo.envmanager.util.extension.*
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.io.ByteArrayInputStream
@@ -61,6 +58,24 @@ class Save : Command(help = "Save current environment") {
                     properties.toMap()
                 )
             )
+
+        if (clipboard && tag == config.currentEnv) {
+            checkout(tag)
+        }
+    }
+
+    private fun checkout(tag: String) {
+
+        val target = File(config.targetPath)
+
+        val environment = paths.environmentsDir.resolve(tag.json)
+
+        target.writeText(
+            environment
+                .readAsMap()
+                .entries
+                .joinToString(separator = "\n")
+        )
     }
 
     private fun getProperties(): Properties {
