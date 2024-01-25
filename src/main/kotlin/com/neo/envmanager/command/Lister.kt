@@ -14,10 +14,8 @@ import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
-import com.neo.envmanager.util.extension.json
-import com.neo.envmanager.util.extension.readAsMap
-import com.neo.envmanager.util.extension.requireInstall
-import com.neo.envmanager.util.extension.tag
+import com.neo.envmanager.util.extension.*
+import java.io.File
 
 /**
  * List environments
@@ -105,12 +103,23 @@ class Lister : Command(
             terminal.println(
                 Text(
                     if (name == config.currentEnv) {
-                        TextStyles.bold(name)
+                        TextStyles.bold(getCurrentName(environment))
                     } else {
                         name
                     }
                 )
             )
         }
+    }
+
+    private fun getCurrentName(environment: File): String {
+
+        val target = File(config.targetPath)
+
+        if (environment.readAsMap() == target.readAsProperties()) {
+            return environment.nameWithoutExtension
+        }
+
+        return environment.nameWithoutExtension + "*"
     }
 }
