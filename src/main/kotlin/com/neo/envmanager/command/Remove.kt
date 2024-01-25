@@ -5,10 +5,12 @@ import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
+import com.google.gson.Gson
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
+import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.extension.*
 
 class Remove : Command(
@@ -22,14 +24,21 @@ class Remove : Command(
         help = "Remove all environments"
     ).flag()
 
+    lateinit var config: Config
+
     override fun run() {
 
-        requireInstall()
+        config = requireInstall()
 
         if (all) {
             removeAll()
             return
         }
+
+        removeEnvironment()
+    }
+
+    private fun removeEnvironment() {
 
         val tag = tag ?: throw SpecifyEnvironmentError()
 
@@ -38,6 +47,10 @@ class Remove : Command(
         if (!environment.exists()) throw EnvironmentNotFound(tag)
 
         environment.delete()
+
+        if (tag == config.currentEnv) {
+            clearCurrentEnvironment()
+        }
     }
 
     private fun removeAll() {
@@ -46,6 +59,18 @@ class Remove : Command(
 
         paths.environmentsDir.deleteChildren()
 
+        clearCurrentEnvironment()
+
         echo(success(text = "All environments removed"))
+    }
+
+    private fun clearCurrentEnvironment() {
+        paths.configFile.writeText(
+            Gson().toJson(
+                config.copy(
+                    currentEnv = null
+                )
+            )
+        )
     }
 }
