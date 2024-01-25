@@ -1,5 +1,7 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 import com.google.gson.Gson
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.error.EnvironmentNotFound
@@ -15,17 +17,18 @@ class Checkout : Command(
 
     private val tag by tag()
 
+    private val force by option(
+        "-f", "--force",
+        help = "Force checkout"
+    ).flag()
+
     override fun run() {
 
         val config = requireInstall()
 
         val target = File(config.targetPath)
 
-        val environment = paths.environmentsDir.resolve(tag.json)
-
-        if (!environment.exists()) {
-            throw EnvironmentNotFound(tag)
-        }
+        val environment = getEnvironment()
 
         target.writeText(
             environment
@@ -41,5 +44,23 @@ class Checkout : Command(
                 )
             )
         )
+    }
+
+    private fun getEnvironment(): File {
+
+        val environment = paths.environmentsDir.resolve(tag.json)
+
+        if (environment.exists()) {
+
+            return environment
+        }
+
+        if (force) {
+            environment.createNewFile()
+
+            return environment
+        }
+
+        throw EnvironmentNotFound(tag)
     }
 }
