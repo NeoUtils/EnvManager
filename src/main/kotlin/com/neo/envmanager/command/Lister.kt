@@ -17,10 +17,6 @@ import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.*
 import java.io.File
 
-/**
- * List environments
- * @author Irineu A. Silva
- */
 class Lister : Command(
     name = "list",
     help = "List environments"

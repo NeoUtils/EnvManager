@@ -2,6 +2,8 @@ package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 import com.google.gson.Gson
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
@@ -12,15 +14,17 @@ import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.extension.success
 import java.io.File
 
-/**
- * Install environment control
- * @author Irineu A. Silva
- */
 class Install : Command(help = "Install environment control") {
+
+    private val force by option(
+        "-f",
+        "--force",
+        help = "Force installation"
+    ).flag()
 
     override fun run() {
 
-        if (paths.isInstalled()) {
+        if (!force && paths.isInstalled()) {
             echo(success(text = "Already installed"))
             throw Abort()
         }
@@ -34,7 +38,6 @@ class Install : Command(help = "Install environment control") {
 
     private fun finished(config: Config) {
 
-        echo()
         echo(success(text = "Installed"))
 
         val properties = File(
