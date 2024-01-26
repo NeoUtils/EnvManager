@@ -18,7 +18,7 @@ class Checkout : Command(
     private val tag by tag()
 
     private val force by option(
-        "-f", "--force",
+       names = arrayOf("-f", "--force"),
         help = "Force checkout"
     ).flag()
 

@@ -20,7 +20,7 @@ class Remove : Command(
     private val tag by tag().optional()
 
     private val all by option(
-        "-a", "--all",
+        names = arrayOf("-a", "--all"),
         help = "Remove all environments"
     ).flag()
 

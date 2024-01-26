@@ -17,8 +17,7 @@ import java.io.File
 class Install : Command(help = "Install environment control") {
 
     private val force by option(
-        "-f",
-        "--force",
+        names = arrayOf("-f", "--force"),
         help = "Force installation"
     ).flag()
 

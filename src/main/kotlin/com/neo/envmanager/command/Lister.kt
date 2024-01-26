@@ -24,8 +24,7 @@ class Lister : Command(
     private val tag by tag().optional()
 
     private val current by option(
-        "-c",
-        "--current",
+        names = arrayOf("-c", "--current"),
         help = "Show current environment"
     ).flag()
 
