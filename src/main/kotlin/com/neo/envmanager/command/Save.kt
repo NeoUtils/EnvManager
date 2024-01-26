@@ -17,13 +17,15 @@ import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.OutputStream
+import java.io.PrintStream
 import java.util.*
 
 class Save : Command(help = "Save current environment") {
 
     private val tag by tag().optional()
 
-    private val clipboard by option(
+    private val fromClipboard by option(
         names = arrayOf("-c", "--clipboard"),
         help = "Save from clipboard"
     ).flag()
@@ -59,12 +61,32 @@ class Save : Command(help = "Save current environment") {
                 )
             )
 
-        if (clipboard && tag == config.currentEnv) {
+        // Update target when current environment is modified
+        if (fromClipboard && tag == config.currentEnv) {
+            updateTarget(tag)
+            return
+        }
+
+        // Checkout when save target without environment
+        if (!fromClipboard && config.currentEnv == null) {
             checkout(tag)
         }
     }
 
     private fun checkout(tag: String) {
+
+        paths.configFile.writeText(
+            Gson().toJson(
+                config.copy(
+                    currentEnv = tag
+                )
+            )
+        )
+
+        updateTarget(tag)
+    }
+
+    private fun updateTarget(tag: String) {
 
         val target = File(config.targetPath)
 
@@ -80,10 +102,14 @@ class Save : Command(help = "Save current environment") {
 
     private fun getProperties(): Properties {
 
-        if (clipboard) {
+        if (fromClipboard) {
+
+            // Don't print exception https://youtrack.jetbrains.com/issue/IDEA-324810
+            System.setErr(PrintStream(OutputStream.nullOutputStream()))
+
             val clipboard = Toolkit.getDefaultToolkit().systemClipboard
 
-            val contents = clipboard.getContents(null)
+            val contents = clipboard.getContents(DataFlavor.stringFlavor)
 
             if (!contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 throw NotSupportedTransferData()
