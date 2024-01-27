@@ -145,12 +145,7 @@ class Remove : Command(
 
         val environment = paths.environmentsDir.resolve(tag.json)
 
-        target.file.writeText(
-            environment
-                .readAsMap()
-                .entries
-                .joinToString(separator = "\n")
-        )
+        target.write(environment.readAsMap())
     }
 
     private fun removeInTarget() {
@@ -172,10 +167,6 @@ class Remove : Command(
 
         keys.forEach { properties.remove(it) }
 
-        target.file.writeText(
-            properties
-                .entries
-                .joinToString(separator = "\n")
-        )
+        target.write(properties)
     }
 }
