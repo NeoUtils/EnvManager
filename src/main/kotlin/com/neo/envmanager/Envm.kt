@@ -43,7 +43,7 @@ class Envm : CliktCommand(
             Save(),
             Lister(),
             Checkout(),
-            Remove(),
+            Delete(),
             Rename(),
             Setter()
         )

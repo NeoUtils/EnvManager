@@ -13,15 +13,15 @@ import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.extension.*
 
-class Remove : Command(
-    help = "Remove an environment"
+class Delete : Command(
+    help = "Delete an environment"
 ) {
 
     private val tag by tag().optional()
 
     private val all by option(
         names = arrayOf("-a", "--all"),
-        help = "Remove all environments"
+        help = "Delete all environments"
     ).flag()
 
     lateinit var config: Config
@@ -31,14 +31,14 @@ class Remove : Command(
         config = requireInstall()
 
         if (all) {
-            removeAll()
+            deleteAll()
             return
         }
 
-        removeEnvironment()
+        deleteEnvironment()
     }
 
-    private fun removeEnvironment() {
+    private fun deleteEnvironment() {
 
         val tag = tag ?: throw SpecifyEnvironmentError()
 
@@ -53,15 +53,15 @@ class Remove : Command(
         }
     }
 
-    private fun removeAll() {
+    private fun deleteAll() {
 
-        if (YesNoPrompt("Remove all environments?", terminal).ask() != true) throw Cancel()
+        if (YesNoPrompt("Delete all environments?", terminal).ask() != true) throw Cancel()
 
         paths.environmentsDir.deleteChildren()
 
         clearCurrentEnvironment()
 
-        echo(success(text = "All environments removed"))
+        echo(success(text = "All environments deleted"))
     }
 
     private fun clearCurrentEnvironment() {
