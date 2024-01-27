@@ -1,5 +1,6 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -41,54 +42,35 @@ class Delete : Command(
             return
         }
 
+        deleteByTags()
+    }
+
+    private fun deleteByTags() {
+
         if (tags.isEmpty()) {
             throw SpecifyEnvironmentError(multiple = true)
         }
 
-        if (tags.size == 1) {
-            singleDelete()
-            return
-        }
-
-        multipleDelete()
-    }
-
-    private fun singleDelete() {
-
-        val tag = tags.single()
-
-        val environment = paths.environmentsDir.resolve(tag.json)
-
-        if (!environment.exists()) {
-            throw EnvironmentNotFound(tag)
-        }
-
-        environment.delete()
-
-        val currentTag = config.currentEnv ?: return
-
-        if (tag == currentTag) {
-            clearCurrentEnvironment()
-        }
-    }
-
-    private fun multipleDelete() {
-
-        for (tag in tags) {
-
-            val environment = paths.environmentsDir.resolve(tag.json)
-
-            if (!environment.exists()) {
+        val environments = tags.mapNotNull { tag ->
+            paths.environmentsDir.resolve(tag.json).takeIf {
+                it.exists()
+            } ?: run {
                 echoFormattedHelp(EnvironmentNotFound(tag))
-                continue
+                null
             }
-
-            environment.delete()
         }
+
+        if (environments.isEmpty()) throw Abort()
+
+        environments.forEach { it.delete() }
 
         val currentTag = config.currentEnv ?: return
 
-        if (tags.contains(currentTag)) {
+        val currentHasDeleted = environments.any {
+            it.nameWithoutExtension == currentTag
+        }
+
+        if (currentHasDeleted) {
             clearCurrentEnvironment()
         }
     }
