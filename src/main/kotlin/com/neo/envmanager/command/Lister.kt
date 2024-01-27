@@ -19,7 +19,7 @@ import java.io.File
 
 class Lister : Command(
     name = "list",
-    help = "List environments"
+    help = "List environments or properties"
 ) {
     private val tag by tag().optional()
 

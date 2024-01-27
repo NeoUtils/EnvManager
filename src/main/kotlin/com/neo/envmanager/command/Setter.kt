@@ -16,7 +16,7 @@ import java.io.File
 
 class Setter : Command(
     name = "set",
-    help = "Set properties to environment",
+    help = "Set one or more properties",
 ) {
 
     private val properties by argument(
