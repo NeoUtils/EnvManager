@@ -19,9 +19,9 @@ import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
-import com.neo.envmanager.util.extension.readAsProperties
 import com.neo.envmanager.util.extension.requireInstall
 import java.io.File
+import java.util.*
 
 class Remove : Command(
     help = "Remove one or more properties"
@@ -80,8 +80,7 @@ class Remove : Command(
 
             val target = Target(config.targetPath)
 
-            // Clear target
-            target.file.writeText(text = "")
+            target.write(Properties())
 
             return
         }
@@ -145,14 +144,14 @@ class Remove : Command(
 
         val environment = paths.environmentsDir.resolve(tag.json)
 
-        target.write(environment.readAsMap())
+        target.write(environment.readAsMap().toProperties())
     }
 
     private fun removeInTarget() {
 
         val target = Target(config.targetPath)
 
-        val properties = target.file.readAsProperties()
+        val properties = target.read()
 
         val keys = keys.mapNotNull { key ->
             if (properties.containsKey(key)) {

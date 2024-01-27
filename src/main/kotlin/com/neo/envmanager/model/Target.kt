@@ -3,6 +3,7 @@ package com.neo.envmanager.model
 import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.util.extension.iterable
 import java.io.File
+import java.util.*
 
 @JvmInline
 value class Target(val file: File) {
@@ -13,7 +14,7 @@ value class Target(val file: File) {
         if (!file.exists()) throw TargetNotFound(file.path)
     }
 
-    fun write(properties: Map<*, *>) {
+    fun write(properties: Properties) {
         file.writeText(
             properties.iterable().joinToString(
                 separator = "\n"
@@ -21,5 +22,9 @@ value class Target(val file: File) {
                 "$key=$value"
             }
         )
+    }
+
+    fun read() = Properties().apply {
+        load(file.inputStream())
     }
 }
