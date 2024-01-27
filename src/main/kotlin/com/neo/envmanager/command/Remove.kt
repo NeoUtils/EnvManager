@@ -1,8 +1,10 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.neo.envmanager.core.Command
+import com.neo.envmanager.exception.error.SpecifyKeysError
 import com.neo.envmanager.exception.error.KeyNotFound
 import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.model.Config
@@ -29,6 +31,10 @@ class Remove : Command(
 
     private fun removeInTarget() {
 
+        if (keys.isEmpty()) {
+            throw SpecifyKeysError()
+        }
+
         val target = File(config.targetPath)
 
         if (!target.exists()) {
@@ -37,15 +43,18 @@ class Remove : Command(
 
         val properties = target.readAsProperties()
 
-        for (key in keys) {
-
-            if (!properties.containsKey(key)) {
+        val keys = keys.mapNotNull { key ->
+            if (properties.containsKey(key)) {
+                key
+            } else {
                 echoFormattedHelp(KeyNotFound(key))
-                continue
+                null
             }
-
-            properties.remove(key)
         }
+
+        if (keys.isEmpty()) throw Abort()
+
+        keys.forEach { properties.remove(it) }
 
         target.writeText(
             properties

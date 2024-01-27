@@ -52,11 +52,13 @@ class Delete : Command(
         }
 
         val environments = tags.mapNotNull { tag ->
-            paths.environmentsDir.resolve(tag.json).takeIf {
-                it.exists()
-            } ?: run {
-                echoFormattedHelp(EnvironmentNotFound(tag))
-                null
+            paths.environmentsDir.resolve(tag.json).let { environment ->
+                if (environment.exists()) {
+                    environment
+                } else {
+                    echoFormattedHelp(EnvironmentNotFound(tag))
+                    null
+                }
             }
         }
 
