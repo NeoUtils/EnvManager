@@ -10,17 +10,14 @@ import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.google.gson.Gson
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
-import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.exception.error.SpecifyKeysError
 import com.neo.envmanager.exception.error.KeyNotFound
 import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.extension.json
-import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
-import java.io.File
 import java.util.*
 
 class Remove : Command(
@@ -87,16 +84,14 @@ class Remove : Command(
 
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = paths.environmentsDir
-            .resolve(tag.json)
-            .takeIf(File::exists) ?: throw EnvironmentNotFound(tag)
+        val environment = Environment.fromTag(paths.environmentsDir, tag)
 
-        val propertiesCount = environment.readAsMap().size
+        val propertiesCount = environment.read().size
 
         if (YesNoPrompt("Delete all $propertiesCount properties?", terminal).ask() != true) throw Cancel()
 
         // Clear environment
-        environment.writeText(text = "")
+        environment.write(emptyMap())
 
         if (tag == config.currentEnv) {
             updateTarget(tag)
@@ -107,11 +102,9 @@ class Remove : Command(
 
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = paths.environmentsDir
-            .resolve(tag.json)
-            .takeIf(File::exists) ?: throw EnvironmentNotFound(tag)
+        val environment = Environment.fromTag(paths.environmentsDir, tag)
 
-        val properties = environment.readAsMap().toMutableMap()
+        val properties = environment.read().toMutableMap()
 
         val keys = keys.mapNotNull { key ->
             if (properties.containsKey(key)) {
@@ -126,11 +119,7 @@ class Remove : Command(
 
         keys.forEach { properties.remove(it) }
 
-        environment.writeText(
-            Gson().toJson(
-                properties
-            )
-        )
+        environment.write(properties)
 
         // Checkout when set in current environment
         if (tag == config.currentEnv) {
@@ -142,9 +131,9 @@ class Remove : Command(
 
         val target = Target(config.targetPath)
 
-        val environment = paths.environmentsDir.resolve(tag.json)
+        val environment = Environment.fromTag(paths.environmentsDir, tag)
 
-        target.write(environment.readAsMap().toProperties())
+        target.write(environment.read().toProperties())
     }
 
     private fun removeInTarget() {
