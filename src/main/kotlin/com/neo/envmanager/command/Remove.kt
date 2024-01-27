@@ -56,6 +56,11 @@ class Remove : Command(
             return
         }
 
+        removeByKeys()
+    }
+
+    private fun removeByKeys() {
+
         if (keys.isEmpty()) {
             throw SpecifyKeysError()
         }
@@ -65,7 +70,7 @@ class Remove : Command(
             return
         }
 
-        removeFromEnvironment()
+        removeInEnvironment()
     }
 
     private fun removeAll() {
@@ -73,11 +78,8 @@ class Remove : Command(
         if (targetOnly) {
 
             val target = File(config.targetPath)
+                .takeIf(File::exists) ?: throw TargetNotFound(config.targetPath)
 
-            if (!target.exists()) {
-                throw TargetNotFound(target.path)
-            }
-            
             // Clear target
             target.writeText(text = "")
 
@@ -86,15 +88,13 @@ class Remove : Command(
 
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = paths.environmentsDir.resolve(tag.json)
+        val environment = paths.environmentsDir
+            .resolve(tag.json)
+            .takeIf(File::exists) ?: throw EnvironmentNotFound(tag)
 
-        if (!environment.exists()) {
-            throw EnvironmentNotFound(tag)
-        }
+        val propertiesCount = environment.readAsMap().size
 
-        val count = environment.readAsMap().size
-
-        if (YesNoPrompt("Delete all $count properties?", terminal).ask() != true) throw Cancel()
+        if (YesNoPrompt("Delete all $propertiesCount properties?", terminal).ask() != true) throw Cancel()
 
         // Clear environment
         environment.writeText(text = "")
@@ -104,15 +104,13 @@ class Remove : Command(
         }
     }
 
-    private fun removeFromEnvironment() {
+    private fun removeInEnvironment() {
 
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = paths.environmentsDir.resolve(tag.json)
-
-        if (!environment.exists()) {
-            throw EnvironmentNotFound(tag)
-        }
+        val environment = paths.environmentsDir
+            .resolve(tag.json)
+            .takeIf(File::exists) ?: throw EnvironmentNotFound(tag)
 
         val properties = environment.readAsMap().toMutableMap()
 
@@ -158,10 +156,7 @@ class Remove : Command(
     private fun removeInTarget() {
 
         val target = File(config.targetPath)
-
-        if (!target.exists()) {
-            throw TargetNotFound(target.path)
-        }
+            .takeIf(File::exists) ?: throw TargetNotFound(config.targetPath)
 
         val properties = target.readAsProperties()
 
