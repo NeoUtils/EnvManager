@@ -16,6 +16,7 @@ import com.neo.envmanager.exception.error.SpecifyKeysError
 import com.neo.envmanager.exception.error.KeyNotFound
 import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.readAsProperties
@@ -77,11 +78,10 @@ class Remove : Command(
 
         if (targetOnly) {
 
-            val target = File(config.targetPath)
-                .takeIf(File::exists) ?: throw TargetNotFound(config.targetPath)
+            val target = Target(config.targetPath)
 
             // Clear target
-            target.writeText(text = "")
+            target.file.writeText(text = "")
 
             return
         }
@@ -100,7 +100,7 @@ class Remove : Command(
         environment.writeText(text = "")
 
         if (tag == config.currentEnv) {
-            checkout(tag)
+            updateTarget(tag)
         }
     }
 
@@ -135,17 +135,17 @@ class Remove : Command(
 
         // Checkout when set in current environment
         if (tag == config.currentEnv) {
-            checkout(tag)
+            updateTarget(tag)
         }
     }
 
-    private fun checkout(tag: String) {
+    private fun updateTarget(tag: String) {
 
-        val target = File(config.targetPath)
+        val target = Target(config.targetPath)
 
         val environment = paths.environmentsDir.resolve(tag.json)
 
-        target.writeText(
+        target.file.writeText(
             environment
                 .readAsMap()
                 .entries
@@ -155,10 +155,9 @@ class Remove : Command(
 
     private fun removeInTarget() {
 
-        val target = File(config.targetPath)
-            .takeIf(File::exists) ?: throw TargetNotFound(config.targetPath)
+        val target = Target(config.targetPath)
 
-        val properties = target.readAsProperties()
+        val properties = target.file.readAsProperties()
 
         val keys = keys.mapNotNull { key ->
             if (properties.containsKey(key)) {
@@ -173,7 +172,7 @@ class Remove : Command(
 
         keys.forEach { properties.remove(it) }
 
-        target.writeText(
+        target.file.writeText(
             properties
                 .entries
                 .joinToString(separator = "\n")
