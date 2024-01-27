@@ -111,6 +111,10 @@ class Lister : Command(
 
         val target = File(config.targetPath)
 
+        if (!target.exists()) {
+            return environment.nameWithoutExtension
+        }
+
         if (environment.readAsMap() == target.readAsProperties()) {
             return environment.nameWithoutExtension
         }
