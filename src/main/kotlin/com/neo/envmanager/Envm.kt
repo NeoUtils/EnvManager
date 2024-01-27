@@ -45,7 +45,8 @@ class Envm : CliktCommand(
             Checkout(),
             Delete(),
             Rename(),
-            Setter()
+            Setter(),
+            Remove(),
         )
     }
 
