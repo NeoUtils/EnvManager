@@ -1,7 +1,8 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.core.terminal
-import com.github.ajalt.clikt.parameters.arguments.optional
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
@@ -11,20 +12,25 @@ import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Config
-import com.neo.envmanager.util.extension.*
+import com.neo.envmanager.util.extension.deleteChildren
+import com.neo.envmanager.util.extension.json
+import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.extension.success
 
 class Delete : Command(
-    help = "Delete an environment"
+    help = "Delete one or more environments"
 ) {
 
-    private val tag by tag().optional()
+    private val tags by argument(
+        help = "Environment tags to delete, separated by space"
+    ).multiple()
 
     private val all by option(
         names = arrayOf("-a", "--all"),
         help = "Delete all environments"
     ).flag()
 
-    lateinit var config: Config
+    private lateinit var config: Config
 
     override fun run() {
 
@@ -35,27 +41,63 @@ class Delete : Command(
             return
         }
 
-        deleteEnvironment()
+        if (tags.isEmpty()) {
+            throw SpecifyEnvironmentError(multiple = true)
+        }
+
+        if (tags.size == 1) {
+            singleDelete()
+            return
+        }
+
+        multipleDelete()
     }
 
-    private fun deleteEnvironment() {
+    private fun singleDelete() {
 
-        val tag = tag ?: throw SpecifyEnvironmentError()
+        val tag = tags.single()
 
         val environment = paths.environmentsDir.resolve(tag.json)
 
-        if (!environment.exists()) throw EnvironmentNotFound(tag)
+        if (!environment.exists()) {
+            throw EnvironmentNotFound(tag)
+        }
 
         environment.delete()
 
-        if (tag == config.currentEnv) {
+        val currentTag = config.currentEnv ?: return
+
+        if (tag == currentTag) {
+            clearCurrentEnvironment()
+        }
+    }
+
+    private fun multipleDelete() {
+
+        for (tag in tags) {
+
+            val environment = paths.environmentsDir.resolve(tag.json)
+
+            if (!environment.exists()) {
+                echoFormattedHelp(EnvironmentNotFound(tag))
+                continue
+            }
+
+            environment.delete()
+        }
+
+        val currentTag = config.currentEnv ?: return
+
+        if (tags.contains(currentTag)) {
             clearCurrentEnvironment()
         }
     }
 
     private fun deleteAll() {
 
-        if (YesNoPrompt("Delete all environments?", terminal).ask() != true) throw Cancel()
+        val count = paths.environmentsDir.listFiles()?.size ?: 0
+
+        if (YesNoPrompt("Delete all $count environment?", terminal).ask() != true) throw Cancel()
 
         paths.environmentsDir.deleteChildren()
 
