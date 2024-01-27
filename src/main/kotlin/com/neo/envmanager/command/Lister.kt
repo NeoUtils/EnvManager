@@ -38,7 +38,7 @@ class Lister : Command(
 
             val tag = config.currentEnv ?: throw NoCurrentEnvironment()
 
-            echo(terminal.theme.info(text = "! Environment: $tag\n"))
+            echo(terminal.theme.info(text = "> $tag"))
 
             showEnvironmentByTag(tag)
 
