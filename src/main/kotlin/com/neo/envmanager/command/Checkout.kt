@@ -2,16 +2,12 @@ package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import com.google.gson.Gson
 import com.neo.envmanager.core.Command
-import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.extension.json
-import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
-import java.io.File
+import com.neo.envmanager.util.extension.update
 
 class Checkout : Command(
     help = "Checkout an environment"
@@ -38,18 +34,18 @@ class Checkout : Command(
                 .toProperties()
         )
 
-        paths.configFile.writeText(
-            Gson().toJson(
-                config.copy(
-                    currentEnv = tag
-                )
+        config.update {
+            it.copy(
+                currentEnv = tag
             )
-        )
+        }
     }
 
     private fun getEnvironment(): Environment {
 
-        if (force) { return Environment.getOrCreate(paths.environmentsDir, tag) }
+        if (force) {
+            return Environment.getOrCreate(paths.environmentsDir, tag)
+        }
 
         return Environment.get(paths.environmentsDir, tag)
     }

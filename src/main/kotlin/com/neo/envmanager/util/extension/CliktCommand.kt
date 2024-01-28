@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.google.gson.Gson
 import com.neo.envmanager.exception.error.NotInstalledError
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Paths
@@ -33,3 +34,15 @@ fun CliktCommand.tag() = argument(
 fun CliktCommand.success(
     text: String
 ) = terminal.theme.success(text = "✔ $text")
+
+context(CliktCommand)
+fun Config.update(block: (Config) -> Config) {
+
+    val paths = checkNotNull(currentContext.findObject<Paths>())
+
+    paths.configFile.writeText(
+        Gson().toJson(
+            block(this)
+        )
+    )
+}
