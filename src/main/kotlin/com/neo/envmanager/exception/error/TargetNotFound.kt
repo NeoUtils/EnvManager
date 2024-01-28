@@ -7,5 +7,5 @@ class TargetNotFound(
     path: String,
     theme: Theme = Theme.Default
 ) : CliktError(
-    theme.danger(text = "✖ Environment properties '$path' not found")
+    theme.danger(text = "✖ Target '$path' not found")
 )

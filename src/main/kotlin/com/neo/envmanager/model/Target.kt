@@ -27,4 +27,17 @@ value class Target(val file: File) {
     fun read() = Properties().apply {
         load(file.inputStream())
     }
+
+    companion object {
+        fun getOrCreate(path: String): Target {
+
+            val file = File(path)
+
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+
+            return Target(file)
+        }
+    }
 }

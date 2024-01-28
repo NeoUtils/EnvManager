@@ -27,9 +27,20 @@ value class Environment(val file: File) {
 
     companion object {
 
-        fun fromTag(dir: File, tag: String): Environment {
+        fun get(dir: File, tag: String): Environment {
 
             return Environment(dir.resolve(tag.json))
+        }
+
+        fun getOrCreate(dir: File, tag: String): Environment {
+
+            val file = dir.resolve(tag.json)
+
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+
+            return Environment(file)
         }
     }
 }
