@@ -7,17 +7,13 @@ import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
-import com.google.gson.Gson
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
-import com.neo.envmanager.util.extension.deleteChildren
-import com.neo.envmanager.util.extension.json
-import com.neo.envmanager.util.extension.requireInstall
-import com.neo.envmanager.util.extension.success
+import com.neo.envmanager.util.extension.*
 
 class Delete : Command(
     help = "Delete one or more environments"
@@ -88,13 +84,9 @@ class Delete : Command(
         echo(success(text = "All environments deleted"))
     }
 
-    private fun clearCurrentEnvironment() {
-        paths.configFile.writeText(
-            Gson().toJson(
-                config.copy(
-                    currentEnv = null
-                )
-            )
+    private fun clearCurrentEnvironment() = config.update {
+        it.copy(
+            currentEnv = null
         )
     }
 }
