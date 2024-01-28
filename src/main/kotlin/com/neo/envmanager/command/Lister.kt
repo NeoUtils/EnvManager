@@ -1,20 +1,25 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.rendering.TextStyles
-import com.github.ajalt.mordant.widgets.HorizontalRule
 import com.github.ajalt.mordant.widgets.Text
 import com.neo.envmanager.com.neo.envmanager.exception.error.NoCurrentEnvironment
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
-import com.neo.envmanager.util.extension.*
+import com.neo.envmanager.util.extension.readAsMap
+import com.neo.envmanager.util.extension.readAsProperties
+import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.extension.tag
 import java.io.File
 
 class Lister : Command(
@@ -57,17 +62,17 @@ class Lister : Command(
 
     private fun showEnvironmentByTag(tag: String) {
 
-        val environment = paths.environmentsDir.resolve(tag.json)
-
-        if (!environment.exists()) {
+        val environment = runCatching {
+            Environment.get(paths.environmentsDir, tag)
+        }.getOrElse {
 
             echoFormattedHelp(EnvironmentNotFound(tag))
             echo(Instructions.SAVE)
 
-            return
+            throw Abort()
         }
 
-        environment.readAsMap().forEach { (key, value) ->
+        environment.read().forEach { (key, value) ->
 
             val property = key +
                     Constants.PROPERTY_SEPARATOR +
@@ -88,7 +93,7 @@ class Lister : Command(
             echoFormattedHelp(NoEnvironmentsFound())
             echo(Instructions.SAVE)
 
-            return
+            throw Abort()
         }
 
         environments.forEach { environment ->
@@ -109,13 +114,13 @@ class Lister : Command(
 
     private fun getCurrentName(environment: File): String {
 
-        val target = File(config.targetPath)
-
-        if (!target.exists()) {
+        val target = runCatching {
+            Target(config.targetPath)
+        }.getOrElse {
             return environment.nameWithoutExtension
         }
 
-        if (environment.readAsMap() == target.readAsProperties()) {
+        if (environment.readAsMap() == target.read().toMap()) {
             return environment.nameWithoutExtension
         }
 
