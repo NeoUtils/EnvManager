@@ -13,6 +13,7 @@ import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Environment
 import com.neo.envmanager.util.extension.deleteChildren
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.requireInstall
@@ -52,24 +53,21 @@ class Delete : Command(
         }
 
         val environments = tags.mapNotNull { tag ->
-            paths.environmentsDir.resolve(tag.json).let { environment ->
-                if (environment.exists()) {
-                    environment
-                } else {
-                    echoFormattedHelp(EnvironmentNotFound(tag))
-                    null
-                }
-            }
+            runCatching {
+                Environment.get(paths.environmentsDir, tag)
+            }.onFailure {
+                echoFormattedHelp(error = it as? EnvironmentNotFound ?: throw it)
+            }.getOrNull()
         }
 
         if (environments.isEmpty()) throw Abort()
 
-        environments.forEach { it.delete() }
+        environments.forEach { it.file.delete() }
 
         val currentTag = config.currentEnv ?: return
 
         val currentHasDeleted = environments.any {
-            it.nameWithoutExtension == currentTag
+            it.file.nameWithoutExtension == currentTag
         }
 
         if (currentHasDeleted) {
