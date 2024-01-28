@@ -11,7 +11,9 @@ import com.neo.envmanager.util.extension.promptFile
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.util.extension.readAsProperties
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.success
+import com.neo.envmanager.util.extension.update
 import java.io.File
 
 class Install : Command(help = "Install environment control") {
@@ -39,13 +41,12 @@ class Install : Command(help = "Install environment control") {
 
         echo(success(text = "Installed"))
 
-        val properties = File(
+        val properties = Target(
             config.targetPath
-        ).readAsProperties()
+        ).read()
 
         if (properties.isNotEmpty()) {
-            terminal.println()
-            echo(message = "! ${properties.count()} properties found.")
+            echo(message = "\n! ${properties.count()} properties found.")
             echo(Instructions.SAVE)
         }
     }
@@ -60,11 +61,7 @@ class Install : Command(help = "Install environment control") {
 
         return Config(
             targetPath = target.path
-        ).also {
-            paths.configFile.writeText(
-                Gson().toJson(it)
-            )
-        }
+        ).update()
     }
 
     private fun createGitIgnore() {

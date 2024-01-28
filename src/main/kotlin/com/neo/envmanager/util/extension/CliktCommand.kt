@@ -36,13 +36,13 @@ fun CliktCommand.success(
 ) = terminal.theme.success(text = "✔ $text")
 
 context(CliktCommand)
-fun Config.update(block: (Config) -> Config) {
+fun Config.update(block: (Config) -> Config = { it }) : Config {
 
     val paths = checkNotNull(currentContext.findObject<Paths>())
 
-    paths.configFile.writeText(
-        Gson().toJson(
-            block(this)
+    return block(this).also {
+        paths.configFile.writeText(
+            Gson().toJson(it)
         )
-    )
+    }
 }
