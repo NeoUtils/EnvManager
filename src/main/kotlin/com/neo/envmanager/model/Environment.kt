@@ -12,7 +12,7 @@ value class Environment(val file: File) {
     constructor(path: String) : this(File(path))
 
     init {
-        if (!file.exists()) throw EnvironmentNotFound(file.path)
+        if (!file.exists()) throw EnvironmentNotFound(file.nameWithoutExtension)
     }
 
     fun read(): Map<String, String> {
