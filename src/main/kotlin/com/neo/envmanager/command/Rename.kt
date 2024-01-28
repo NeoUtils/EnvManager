@@ -10,7 +10,7 @@ import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
 
 class Rename : Command(
-    help = "Rename environment"
+    help = "Rename an environment"
 ) {
 
     private val oldTag by argument(

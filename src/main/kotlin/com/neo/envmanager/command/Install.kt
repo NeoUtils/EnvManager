@@ -18,7 +18,7 @@ class Install : Command(help = "Install environment control") {
 
     private val force by option(
         names = arrayOf("-f", "--force"),
-        help = "Force installation"
+        help = "Force installation; useful to fix installation"
     ).flag()
 
     override fun run() {

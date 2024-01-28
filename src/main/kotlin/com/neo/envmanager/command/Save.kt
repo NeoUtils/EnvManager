@@ -21,7 +21,7 @@ import java.io.OutputStream
 import java.io.PrintStream
 import java.util.*
 
-class Save : Command(help = "Save current environment") {
+class Save : Command(help = "Save target to an environment") {
 
     private val tag by tag().optional()
 

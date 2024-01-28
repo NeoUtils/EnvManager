@@ -19,7 +19,7 @@ import java.io.File
 
 class Lister : Command(
     name = "list",
-    help = "List environments"
+    help = "List environments or properties"
 ) {
     private val tag by tag().optional()
 
@@ -38,7 +38,7 @@ class Lister : Command(
 
             val tag = config.currentEnv ?: throw NoCurrentEnvironment()
 
-            echo(terminal.theme.info(text = "! Environment: $tag\n"))
+            echo(terminal.theme.info(text = "> $tag"))
 
             showEnvironmentByTag(tag)
 
@@ -110,6 +110,10 @@ class Lister : Command(
     private fun getCurrentName(environment: File): String {
 
         val target = File(config.targetPath)
+
+        if (!target.exists()) {
+            return environment.nameWithoutExtension
+        }
 
         if (environment.readAsMap() == target.readAsProperties()) {
             return environment.nameWithoutExtension

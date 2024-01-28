@@ -1,30 +1,47 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
-import com.github.ajalt.clikt.parameters.arguments.optional
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
-import com.google.gson.Gson
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
-import com.neo.envmanager.exception.error.EnvironmentNotFound
+import com.neo.envmanager.exception.error.KeyNotFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
+import com.neo.envmanager.exception.error.SpecifyKeysError
 import com.neo.envmanager.model.Config
-import com.neo.envmanager.util.extension.*
+import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.Target
+import com.neo.envmanager.util.extension.requireInstall
+import java.util.*
 
 class Remove : Command(
-    help = "Remove an environment"
+    help = "Remove one or more properties"
 ) {
 
-    private val tag by tag().optional()
+    private val keys by argument(
+        help = "Properties tags to delete, separated by space"
+    ).multiple()
+
+    private val tag by option(
+        names = arrayOf("-t", "--tag"),
+        help = "Environment tag"
+    )
+
+    private val targetOnly by option(
+        names = arrayOf("-o", "--target-only"),
+        help = "Delete properties from target only"
+    ).flag()
 
     private val all by option(
         names = arrayOf("-a", "--all"),
-        help = "Remove all environments"
+        help = "Set properties to all environments"
     ).flag()
 
-    lateinit var config: Config
+    private lateinit var config: Config
 
     override fun run() {
 
@@ -35,42 +52,107 @@ class Remove : Command(
             return
         }
 
-        removeEnvironment()
+        removeByKeys()
     }
 
-    private fun removeEnvironment() {
+    private fun removeByKeys() {
 
-        val tag = tag ?: throw SpecifyEnvironmentError()
-
-        val environment = paths.environmentsDir.resolve(tag.json)
-
-        if (!environment.exists()) throw EnvironmentNotFound(tag)
-
-        environment.delete()
-
-        if (tag == config.currentEnv) {
-            clearCurrentEnvironment()
+        if (keys.isEmpty()) {
+            throw SpecifyKeysError()
         }
+
+        if (targetOnly) {
+            removeInTarget()
+            return
+        }
+
+        removeInEnvironment()
     }
 
     private fun removeAll() {
 
-        if (YesNoPrompt("Remove all environments?", terminal).ask() != true) throw Cancel()
+        if (targetOnly) {
 
-        paths.environmentsDir.deleteChildren()
+            val target = Target(config.targetPath)
 
-        clearCurrentEnvironment()
+            target.write(Properties())
 
-        echo(success(text = "All environments removed"))
+            return
+        }
+
+        val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
+
+        val environment = Environment.fromTag(paths.environmentsDir, tag)
+
+        val propertiesCount = environment.read().size
+
+        if (YesNoPrompt("Delete all $propertiesCount properties?", terminal).ask() != true) throw Cancel()
+
+        // Clear environment
+        environment.write(emptyMap())
+
+        if (tag == config.currentEnv) {
+            updateTarget(tag)
+        }
     }
 
-    private fun clearCurrentEnvironment() {
-        paths.configFile.writeText(
-            Gson().toJson(
-                config.copy(
-                    currentEnv = null
-                )
-            )
-        )
+    private fun removeInEnvironment() {
+
+        val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
+
+        val environment = Environment.fromTag(paths.environmentsDir, tag)
+
+        val properties = environment.read().toMutableMap()
+
+        val keys = keys.mapNotNull { key ->
+            if (properties.containsKey(key)) {
+                key
+            } else {
+                echoFormattedHelp(KeyNotFound(key))
+                null
+            }
+        }
+
+        if (keys.isEmpty()) throw Abort()
+
+        keys.forEach { properties.remove(it) }
+
+        environment.write(properties)
+
+        // Checkout when set in current environment
+        if (tag == config.currentEnv) {
+            updateTarget(tag)
+        }
+    }
+
+    private fun updateTarget(tag: String) {
+
+        val target = Target(config.targetPath)
+
+        val environment = Environment.fromTag(paths.environmentsDir, tag)
+
+        target.write(environment.read().toProperties())
+    }
+
+    private fun removeInTarget() {
+
+        val target = Target(config.targetPath)
+
+        val properties = target.read()
+
+        val keys = keys.mapNotNull { key ->
+            if (properties.containsKey(key)) {
+                key
+            } else {
+                echoFormattedHelp(KeyNotFound(key))
+                null
+            }
+        }
+
+        if (keys.isEmpty()) throw Abort()
+
+        keys.forEach { properties.remove(it) }
+
+        target.write(properties)
     }
 }
