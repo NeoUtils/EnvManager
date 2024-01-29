@@ -17,7 +17,6 @@ import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.readAsMap
-import com.neo.envmanager.util.extension.readAsProperties
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
 import java.io.File
@@ -33,11 +32,21 @@ class Lister : Command(
         help = "Show current environment"
     ).flag()
 
+    private val target by option(
+        names = arrayOf("-t", "--target"),
+        help = "Show target properties"
+    ).flag()
+
     private lateinit var config: Config
 
     override fun run() {
 
         config = requireInstall()
+
+        if (target) {
+            showTarget()
+            return
+        }
 
         if (current) {
 
@@ -57,7 +66,21 @@ class Lister : Command(
             return
         }
 
-        showEnvironmentsAll()
+        showAllEnvironments()
+    }
+
+    private fun showTarget() {
+
+        val target = Target(config.targetPath)
+
+        target.read().forEach { (key, value) ->
+
+            val property = "$key" +
+                    Constants.PROPERTY_SEPARATOR +
+                    TextStyles.dim("$value")
+
+            terminal.println(Text(property))
+        }
     }
 
     private fun showEnvironmentByTag(tag: String) {
@@ -82,7 +105,7 @@ class Lister : Command(
         }
     }
 
-    private fun showEnvironmentsAll() {
+    private fun showAllEnvironments() {
 
         val environments = paths.environmentsDir.listFiles { _, name ->
             name.endsWith(Constants.DOT_JSON)
