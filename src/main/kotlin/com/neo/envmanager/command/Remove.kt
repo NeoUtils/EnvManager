@@ -89,7 +89,7 @@ class Remove : Command(
         if (YesNoPrompt("Delete all $propertiesCount properties?", terminal).ask() != true) throw Cancel()
 
         // Clear environment
-        environment.write(emptyMap())
+        environment.write(emptyMap<Any, Any>())
 
         if (tag == config.currentEnv) {
             updateTarget(tag)

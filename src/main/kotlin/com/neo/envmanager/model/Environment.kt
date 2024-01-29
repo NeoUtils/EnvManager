@@ -20,7 +20,7 @@ value class Environment(val file: File) {
         return file.readAsMap()
     }
 
-    fun write(properties: Map<String, String>) {
+    fun write(properties: Map<*, *>) {
         file.writeText(
             Gson().toJson(properties)
         )
@@ -45,6 +45,10 @@ value class Environment(val file: File) {
         }
 
         fun getOrCreate(dir: File, tag: String): Environment {
+
+            if (!dir.exists()) {
+                dir.mkdir()
+            }
 
             val file = dir.resolve(tag.json)
 

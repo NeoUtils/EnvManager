@@ -5,18 +5,20 @@ import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
-import com.google.gson.Gson
 import com.neo.envmanager.com.neo.envmanager.exception.error.NotSupportedTransferData
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
-import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.model.Config
-import com.neo.envmanager.util.extension.*
+import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.Target
+import com.neo.envmanager.util.extension.json
+import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.extension.tag
+import com.neo.envmanager.util.extension.update
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.io.ByteArrayInputStream
-import java.io.File
 import java.io.OutputStream
 import java.io.PrintStream
 import java.util.*
@@ -41,25 +43,20 @@ class Save : Command(help = "Save target to an environment") {
 
         val properties = getProperties()
 
-        val environment = paths.environmentsDir.apply {
-            if (!exists()) mkdirs()
-        }.resolve(tag.json)
+        val environmentFile = paths.environmentsDir.resolve(tag.json)
 
-        if (environment.exists() && this.tag != null) {
+        if (environmentFile.exists() && this.tag != null) {
 
-            echo("! Environment $tag already exists")
+            echo(message = "! Environment $tag already exists")
 
             val overwritePrompt = YesNoPrompt(prompt = "Overwrite $tag?", terminal)
 
             if (overwritePrompt.ask() != true) throw Cancel()
         }
 
-        environment
-            .writeText(
-                Gson().toJson(
-                    properties.toMap()
-                )
-            )
+        Environment
+            .getOrCreate(paths.environmentsDir, tag)
+            .write(properties.toMap())
 
         // Update target when current environment is modified
         if (fromClipboard && tag == config.currentEnv) {
@@ -75,28 +72,25 @@ class Save : Command(help = "Save target to an environment") {
 
     private fun checkout(tag: String) {
 
-        paths.configFile.writeText(
-            Gson().toJson(
-                config.copy(
-                    currentEnv = tag
-                )
+        config.update {
+            it.copy(
+                currentEnv = tag
             )
-        )
+        }
 
         updateTarget(tag)
     }
 
     private fun updateTarget(tag: String) {
 
-        val target = File(config.targetPath)
+        val target = Target(config.targetPath)
 
-        val environment = paths.environmentsDir.resolve(tag.json)
+        val environment = Environment.get(paths.environmentsDir, tag)
 
-        target.writeText(
+        target.write(
             environment
-                .readAsMap()
-                .entries
-                .joinToString(separator = "\n")
+                .read()
+                .toProperties()
         )
     }
 
@@ -126,12 +120,6 @@ class Save : Command(help = "Save target to an environment") {
             }
         }
 
-        val target = File(config.targetPath)
-
-        if (!target.exists()) {
-            throw TargetNotFound(target.path)
-        }
-
-        return target.readAsProperties()
+        return Target(config.targetPath).read()
     }
 }
