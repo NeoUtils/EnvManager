@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.file
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Config
@@ -15,14 +16,23 @@ import com.neo.envmanager.util.extension.success
 
 class Install : Command(help = "Install environment control") {
 
-    private val force by option(
+    private val mustForce by option(
         names = arrayOf("-f", "--force"),
         help = "Force installation; useful to fix installation"
     ).flag()
 
+    private val target by option(
+        names = arrayOf("-t", "--target"),
+        help = "Target (environment properties file)"
+    ).file(
+        mustExist = true,
+        canBeDir = false,
+        canBeFile = true
+    )
+
     override fun run() {
 
-        if (!force && paths.isInstalled()) {
+        if (!mustForce && paths.isInstalled()) {
             echo(success(text = "Already installed"))
             throw Abort()
         }
@@ -50,8 +60,8 @@ class Install : Command(help = "Install environment control") {
 
     private fun createConfig(): Config {
 
-        val target = terminal.promptFile(
-            text = "Environment properties file",
+        val target = target ?: terminal.promptFile(
+            text = "Target (environment properties file)",
             mustExist = true,
             canBeDir = false,
         )
