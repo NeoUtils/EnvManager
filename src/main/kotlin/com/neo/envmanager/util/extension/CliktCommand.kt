@@ -34,15 +34,3 @@ fun CliktCommand.tag() = argument(
 fun CliktCommand.success(
     text: String
 ) = terminal.theme.success(text = "✔ $text")
-
-context(CliktCommand)
-fun Config.update(block: (Config) -> Config = { it }) : Config {
-
-    val paths = checkNotNull(currentContext.findObject<Paths>())
-
-    return block(this).also {
-        paths.configFile.writeText(
-            Gson().toJson(it)
-        )
-    }
-}

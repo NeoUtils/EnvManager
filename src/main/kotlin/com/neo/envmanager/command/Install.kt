@@ -4,17 +4,14 @@ import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import com.google.gson.Gson
+import com.neo.envmanager.com.neo.envmanager.util.extension.update
+import com.neo.envmanager.core.Command
+import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.promptFile
-import com.neo.envmanager.core.Command
-import com.neo.envmanager.util.extension.readAsProperties
-import com.neo.envmanager.model.Config
-import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.success
-import com.neo.envmanager.util.extension.update
-import java.io.File
 
 class Install : Command(help = "Install environment control") {
 

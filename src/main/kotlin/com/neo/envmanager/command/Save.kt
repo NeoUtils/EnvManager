@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.com.neo.envmanager.exception.error.NotSupportedTransferData
+import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
@@ -15,7 +16,6 @@ import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
-import com.neo.envmanager.util.extension.update
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.io.ByteArrayInputStream

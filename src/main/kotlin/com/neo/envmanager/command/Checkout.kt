@@ -2,12 +2,12 @@ package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
-import com.neo.envmanager.util.extension.update
 
 class Checkout : Command(
     help = "Checkout an environment"
