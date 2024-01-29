@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.com.neo.envmanager.exception.error.NotSupportedTransferData
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
+import com.neo.envmanager.com.neo.envmanager.util.mutedErrorOutput
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
@@ -19,8 +20,6 @@ import com.neo.envmanager.util.extension.tag
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.io.ByteArrayInputStream
-import java.io.OutputStream
-import java.io.PrintStream
 import java.util.*
 
 class Save : Command(help = "Save target to an environment") {
@@ -98,18 +97,18 @@ class Save : Command(help = "Save target to an environment") {
 
         if (fromClipboard) {
 
-            // Don't print exception https://youtrack.jetbrains.com/issue/IDEA-324810
-            System.setErr(PrintStream(OutputStream.nullOutputStream()))
+            val data = mutedErrorOutput {
 
-            val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+                val clipboard = Toolkit.getDefaultToolkit().systemClipboard
 
-            val contents = clipboard.getContents(DataFlavor.stringFlavor)
+                val contents = clipboard.getContents(null)
 
-            if (!contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                throw NotSupportedTransferData()
+                if (!contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                    throw NotSupportedTransferData()
+                }
+
+                contents.getTransferData(DataFlavor.stringFlavor)
             }
-
-            val data = contents.getTransferData(DataFlavor.stringFlavor)
 
             return Properties().apply {
                 load(
