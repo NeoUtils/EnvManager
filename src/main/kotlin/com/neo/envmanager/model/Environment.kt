@@ -37,6 +37,17 @@ value class Environment(val file: File) {
         return Environment(newFile)
     }
 
+    fun copyTo(tag: String) : Environment {
+
+        val newFile = file.parentFile.resolve(tag.json)
+
+        if (newFile.exists()) throw EnvironmentAlreadyExists(tag)
+
+        file.copyTo(newFile)
+
+        return Environment(newFile)
+    }
+
     fun add(properties:  Map<*, *>) {
         write(read() + properties)
     }
