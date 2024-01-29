@@ -17,7 +17,6 @@ fun CliktCommand.requireInstall(): Config {
     if (!paths.isInstalled()) {
 
         echoFormattedHelp(NotInstalledError())
-
         echo(Instructions.INSTALL)
 
         throw Abort()
