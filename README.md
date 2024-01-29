@@ -2,58 +2,98 @@
 
 Easily control your environment properties.
 
-## Purpose
+### Instalação
 
-Many projects use environment property files and need to manually swap these properties when testing in different environments. This project aims to facilitate the management of these environment properties.
+Baixe o arquivo de instalção em releases, extraia e execute o arquivo `install.sh` (Linux) com permissão de
+adiminstrador. [Saiba mais](src/dist/INSTRUCTIONS.md).
 
-## Proposal
+> **Suporte:** GNU/Linux, Termux
 
-Inspired a bit by Git, I thought of the following command: [install](#install), [save](#save), [checkout](#checkout), [list](#list), and [remove](#remove).
+### Como funciona
 
-### Install
+O **EnvManager** é util para projetos que possuem **vários ambientes** e controlam suas variáveis através de um *
+*arquivo de propriedades** (que chamamos de **target**), no formato `CHAVE=VALOR`. O **EnvManager** permite você trocar
+facilmente entre os vários ambientes **direto do terminal**, além de outras manipulações, como adicionar e remover
+variaveis etc.
 
-First, you need to install the management in the project folder:
+### Como usar
 
-```bash
-$ ./envm install
+Uma vez instalado no seu sistema, o **EnvManager** pode ser chamado do comando `envm`, seguido de um comando e seus
+argumentos. Uma vez instalado no seu sistema, use o comando `envm` sem argumentos ou `envm --help` para consultar a lista de comandos.
+
+``` shell
+$ envm
+```
+> **Opções:** --help, --path=\<project path>, --version, --show-config
+
+### Comandos básicos
+
+#### install
+
+Para começar a utilizar o **EnvManager** é necessário inicializa-lo no diretório do projeto, para isso utilize o
+comando `install`.
+
+``` shell
+$ envm install
 ```
 
-This will create a configuration file and a folder to store the environments.
+> **Opções:** --help, --target=\<target path>,--force
 
-### Save
+[Saiba mais](doc/envm.md).
 
-With this command, you can save an environment with an associated tag, allowing you to later checkout in it.
+#### save
 
-```bash
-$ ./envm save <tag>
+Você pode salvar as propriedades atuais como um ambiente atraves do comando `save` seguido do nome do ambiente (que
+chamamos de **tag**).
+
+``` shell
+# Exemplo
+$ envm save development
 ```
 
-### Checkout
+> **Opções:** --help, --clipboard
 
-This command allows you to checkout in a saved environment.
+[Saiba mais](doc/save.md)
 
-```bash
-$ ./envm checkout <tag>
+#### list
+
+Para listar os ambientes salvos, utilize o comando `list`.
+
+``` shell
+$ envm list
 ```
 
-### List
+Para listar as propriedades de um ambiente, especifique a tag após o comando `list`.
 
-This command allows you to list the saved environments.
-
-```bash
-$ ./envm list
+``` shell
+# Exemplo
+$ envm list development
 ```
 
-If you specify a tag, the properties associated with it will be displayed.
+> **Opções:** --help, --current, --target
 
-```bash
-$ ./envm list <tag>
+[Saiba mais](doc/list.md)
+
+#### checkout
+
+Para trocar entre os ambientes, utilize o comando `checkout` seguido da tag do ambiente.
+
+``` shell
+$ envm checkout <tag>
 ```
 
-### Remove
+> **Opções:** --help, --force
 
-This command allows you to remove a saved environment.
+[Saiba mais](doc/checkout.md)
 
-```bash
-$ ./envm remove <tag>
+#### delete
+
+Para deletar um ou mais ambientes, utilize o comando `delete` seguido das tags dos ambientes separadas por espaço.
+
+``` shell
+$ envm delete <tags>
 ```
+
+> **Opções:** --help, --all
+
+[Saiba mais](doc/delete.md)
