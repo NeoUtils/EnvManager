@@ -7,6 +7,8 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.mordant.rendering.TextStyle
+import com.github.ajalt.mordant.rendering.TextStyles
 import com.neo.envmanager.command.*
 import com.neo.envmanager.model.Paths
 import com.neo.envmanager.util.Package
@@ -67,9 +69,11 @@ class Envm : CliktCommand(
 
         val config = requireInstall()
 
-        val stringBuilder = StringBuilder("target: ${config.targetPath}")
+        val dim = TextStyles.dim
 
-        config.currentEnv?.let { stringBuilder.append("\ncurrent: $it") }
+        val stringBuilder = StringBuilder("target: ${dim(config.targetPath)}")
+
+        config.currentEnv?.let { stringBuilder.append("\ncurrent: ${dim(it)}") }
 
         throw PrintCompletionMessage(stringBuilder.toString())
     }
