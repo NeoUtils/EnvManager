@@ -4,10 +4,10 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.google.gson.Gson
 import com.neo.envmanager.com.neo.envmanager.exception.error.EnvironmentAlreadyExists
 import com.neo.envmanager.core.Command
-import com.neo.envmanager.exception.error.EnvironmentNotFound
+import com.neo.envmanager.model.Environment
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.requireInstall
-import com.neo.envmanager.util.extension.tag
+import com.neo.envmanager.util.extension.update
 
 class Rename : Command(
     help = "Rename an environment"
@@ -25,29 +25,20 @@ class Rename : Command(
 
         val config = requireInstall()
 
-        val oldEnvironment = paths.environmentsDir
-            .resolve(oldTag.json)
-            .takeIf {
-                it.exists()
-            } ?: throw EnvironmentNotFound(oldTag)
+        val oldEnvironment = Environment.get(paths.environmentsDir, oldTag)
 
-        val newEnvironment =
-            paths.environmentsDir
-                .resolve(newTag.json)
-                .takeIf {
-                    !it.exists()
-                } ?: throw EnvironmentAlreadyExists(newTag)
+        val newEnvironment = paths.environmentsDir.resolve(newTag.json)
 
-        oldEnvironment.renameTo(newEnvironment)
+        if (newEnvironment.exists()) throw EnvironmentAlreadyExists(newTag)
+
+        oldEnvironment.file.renameTo(newEnvironment)
 
         if (oldTag == config.currentEnv) {
-            paths.configFile.writeText(
-                Gson().toJson(
-                    config.copy(
-                        currentEnv = newTag
-                    )
+            config.update {
+                it.copy(
+                    currentEnv = newTag
                 )
-            )
+            }
         }
     }
 }
