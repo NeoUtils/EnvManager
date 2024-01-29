@@ -19,11 +19,13 @@ variaveis etc.
 ### Como usar
 
 Uma vez instalado no seu sistema, o **EnvManager** pode ser chamado do comando `envm`, seguido de um comando e seus
-argumentos. Uma vez instalado no seu sistema, use o comando `envm` sem argumentos ou `envm --help` para consultar a lista de comandos.
+argumentos. Uma vez instalado no seu sistema, use o comando `envm` sem argumentos ou `envm --help` para consultar a
+lista de comandos.
 
 ``` shell
 $ envm
 ```
+
 > **Opções:** --help, --path=\<project path>, --version, --show-config
 
 ### Comandos básicos
@@ -97,3 +99,55 @@ $ envm delete <tags>
 > **Opções:** --help, --all
 
 [Saiba mais](doc/delete.md)
+
+### Outros comandos
+
+#### set
+
+Utilize o comando `set` para adicionar ou alterar uma ou mais propriedades do target ou de um ambiente.
+
+``` shell
+# Exemplo
+$ envm set URL="https://www.example.com" NAME="Example"
+```
+
+> **Opções:** --help, --tag=\<tag>, --all, --target-only
+
+[Saiba mais](doc/set.md)
+
+#### remove
+
+Utilize o comando `remove` para remover uma ou mais propriedades do target ou de um ambiente.
+
+``` shell
+# Exemplo
+$ envm remove URL NAME
+```
+
+> **Opções:** --help, --tag=\<tag>, --all, --target-only
+
+[Saiba mais](doc/remove.md)
+
+#### rename
+
+Utilize o comando `rename` para renomear um ambiente.
+
+``` shell
+$ envm rename <old tag> <new tag>
+```
+
+> **Opções:** --help
+
+[Saiba mais](doc/rename.md)
+
+#### rollback
+
+Utilize o comando `rollback` para reverter as alterações feitas no target sincronizando com o ambiente atual.
+
+``` shell
+$ envm rollback
+```
+
+> **Opções:** --help
+
+[Saiba mais](doc/rollback.md)
