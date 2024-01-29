@@ -10,8 +10,8 @@ class Rename : Command(
     help = "Rename an environment"
 ) {
 
-    private val tag by argument(
-        help = "Environment tag"
+    private val oldTag by argument(
+        help = "Old environment tag"
     )
 
     private val newTag by argument(
@@ -22,12 +22,9 @@ class Rename : Command(
 
         val config = requireInstall()
 
-        Environment.get(
-            paths.environmentsDir,
-            tag
-        ).renameTo(newTag)
+        Environment.get(paths.environmentsDir, oldTag).renameTo(newTag)
 
-        if (tag == config.currentEnv) {
+        if (oldTag == config.currentEnv) {
             config.update {
                 it.copy(
                     currentEnv = newTag
