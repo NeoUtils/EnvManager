@@ -28,6 +28,10 @@ value class Target(val file: File) {
         load(file.inputStream())
     }
 
+    fun add(properties: Properties) {
+        write(read().apply { putAll(properties) })
+    }
+
     companion object {
         fun getOrCreate(path: String): Target {
 

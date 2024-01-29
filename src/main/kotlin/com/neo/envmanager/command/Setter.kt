@@ -3,16 +3,16 @@ package com.neo.envmanager.command
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import com.google.gson.Gson
 import com.neo.envmanager.core.Command
-import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
-import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
-import com.neo.envmanager.util.extension.*
-import java.io.File
+import com.neo.envmanager.util.extension.properties
+import com.neo.envmanager.util.extension.requireInstall
+import java.util.*
 
 class Setter : Command(
     name = "set",
@@ -60,18 +60,10 @@ class Setter : Command(
 
     private fun saveInTarget() {
 
-        val target = File(config.targetPath)
-
-        if (!target.exists()) {
-            throw TargetNotFound(target.path)
-        }
-
-        val updatedProperties = target.readAsProperties() + properties
-
-        target.writeText(
-            updatedProperties
-                .entries
-                .joinToString(separator = "\n")
+        Target(config.targetPath).add(
+            Properties().apply {
+                putAll(properties)
+            }
         )
     }
 
@@ -83,13 +75,7 @@ class Setter : Command(
 
         if (environments.isNullOrEmpty()) throw NoEnvironmentsFound()
 
-        for (environment in environments) {
-            environment.writeText(
-                Gson().toJson(
-                    environment.readAsMap() + properties
-                )
-            )
-        }
+        environments.forEach { Environment(it).add(properties.toMap()) }
 
         val mustCheckout = environments.any {
             it.nameWithoutExtension == config.currentEnv
@@ -104,15 +90,9 @@ class Setter : Command(
 
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = paths.environmentsDir.resolve(tag.json)
+        val environment = Environment.getOrCreate(paths.environmentsDir, tag)
 
-        if (!environment.exists()) environment.createNewFile()
-
-        environment.writeText(
-            Gson().toJson(
-                environment.readAsMap() + properties
-            )
-        )
+        environment.add(properties.toMap())
 
         // Checkout when set in current environment
         if (tag == config.currentEnv) {
@@ -122,15 +102,14 @@ class Setter : Command(
 
     private fun checkout(tag: String) {
 
-        val target = File(config.targetPath)
+        val target = Target(config.targetPath)
 
-        val environment = paths.environmentsDir.resolve(tag.json)
+        val environment = Environment.getOrCreate(paths.environmentsDir, tag)
 
-        target.writeText(
+        target.write(
             environment
-                .readAsMap()
-                .entries
-                .joinToString(separator = "\n")
+                .read()
+                .toProperties()
         )
     }
 }

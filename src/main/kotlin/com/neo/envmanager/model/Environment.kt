@@ -37,6 +37,10 @@ value class Environment(val file: File) {
         return Environment(newFile)
     }
 
+    fun add(properties:  Map<*, *>) {
+        write(read() + properties)
+    }
+
     companion object {
 
         fun get(dir: File, tag: String): Environment {
