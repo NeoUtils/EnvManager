@@ -26,10 +26,8 @@ class Checkout : Command(
 
         val target = Target.getOrCreate(config.targetPath)
 
-        val environment = getEnvironment()
-
         target.write(
-            environment
+            getEnvironment()
                 .read()
                 .toProperties()
         )
@@ -43,10 +41,10 @@ class Checkout : Command(
 
     private fun getEnvironment(): Environment {
 
-        if (force) {
-            return Environment.getOrCreate(paths.environmentsDir, tag)
+        return if (force) {
+            Environment.getOrCreate(paths.environmentsDir, tag)
+        } else {
+            Environment.get(paths.environmentsDir, tag)
         }
-
-        return Environment.get(paths.environmentsDir, tag)
     }
 }
