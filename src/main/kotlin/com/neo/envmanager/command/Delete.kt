@@ -10,13 +10,14 @@ import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
-import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.util.extension.deleteChildren
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.success
+import extension.getOrNull
+import extension.ifFailure
 
 class Delete : Command(
     help = "Delete one or more environments"
@@ -52,10 +53,8 @@ class Delete : Command(
         }
 
         val environments = tags.mapNotNull { tag ->
-            runCatching {
-                Environment.get(paths.environmentsDir, tag)
-            }.onFailure {
-                echoFormattedHelp(error = it as? EnvironmentNotFound ?: throw it)
+            Environment.getSafe(paths.environmentsDir, tag).ifFailure {
+                echoFormattedHelp(error = it)
             }.getOrNull()
         }
 
@@ -87,9 +86,11 @@ class Delete : Command(
         echo(success(text = "All environments deleted"))
     }
 
-    private fun clearCurrentEnvironment() = config.update {
-        it.copy(
-            currentEnv = null
-        )
+    private fun clearCurrentEnvironment() {
+        config.update {
+            it.copy(
+                currentEnv = null
+            )
+        }
     }
 }

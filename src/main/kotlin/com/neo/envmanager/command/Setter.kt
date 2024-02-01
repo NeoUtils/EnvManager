@@ -12,6 +12,7 @@ import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.properties
 import com.neo.envmanager.util.extension.requireInstall
+import extension.getOrThrow
 import java.util.*
 
 class Setter : Command(

@@ -19,6 +19,7 @@ import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
+import extension.getOrElse
 import java.io.File
 
 class Lister : Command(
@@ -85,9 +86,7 @@ class Lister : Command(
 
     private fun showEnvironmentByTag(tag: String) {
 
-        val environment = runCatching {
-            Environment.get(paths.environmentsDir, tag)
-        }.getOrElse {
+        val environment = Environment.getSafe(paths.environmentsDir, tag).getOrElse {
 
             echoFormattedHelp(EnvironmentNotFound(tag))
             echo(Instructions.SAVE)

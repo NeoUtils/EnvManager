@@ -16,6 +16,7 @@ import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.requireInstall
+import extension.getOrThrow
 import java.util.*
 
 class Remove : Command(
@@ -82,7 +83,7 @@ class Remove : Command(
 
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = Environment.get(paths.environmentsDir, tag)
+        val environment = Environment(paths.environmentsDir, tag)
 
         val propertiesCount = environment.read().size
 
@@ -100,7 +101,7 @@ class Remove : Command(
 
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = Environment.get(paths.environmentsDir, tag)
+        val environment = Environment(paths.environmentsDir, tag)
 
         val properties = environment.read().toMutableMap()
 
@@ -129,7 +130,7 @@ class Remove : Command(
 
         val target = Target(config.targetPath)
 
-        val environment = Environment.get(paths.environmentsDir, tag)
+        val environment = Environment(paths.environmentsDir, tag)
 
         target.write(environment.read().toProperties())
     }

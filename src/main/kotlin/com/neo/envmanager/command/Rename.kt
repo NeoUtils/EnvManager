@@ -5,6 +5,7 @@ import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.util.extension.requireInstall
+import extension.getOrThrow
 
 class Rename : Command(
     help = "Rename an environment"
@@ -22,7 +23,7 @@ class Rename : Command(
 
         val config = requireInstall()
 
-        Environment.get(paths.environmentsDir, oldTag).renameTo(newTag)
+        Environment(paths.environmentsDir, oldTag).renameTo(newTag)
 
         if (oldTag == config.currentEnv) {
             config.update {

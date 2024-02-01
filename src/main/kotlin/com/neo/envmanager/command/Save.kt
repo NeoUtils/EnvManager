@@ -17,6 +17,7 @@ import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
+import extension.getOrThrow
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.io.ByteArrayInputStream
@@ -84,7 +85,7 @@ class Save : Command(help = "Save target to an environment") {
 
         val target = Target(config.targetPath)
 
-        val environment = Environment.get(paths.environmentsDir, tag)
+        val environment = Environment(paths.environmentsDir, tag)
 
         target.write(
             environment
