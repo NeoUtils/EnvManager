@@ -4,6 +4,7 @@ import Resource
 import com.google.gson.Gson
 import com.neo.envmanager.com.neo.envmanager.exception.error.EnvironmentAlreadyExists
 import com.neo.envmanager.exception.error.EnvironmentNotFound
+import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.readAsMap
 import java.io.File
@@ -28,7 +29,11 @@ value class Environment(val file: File) {
         )
     }
 
-    fun renameTo(tag: String) : Environment {
+    fun add(properties: Map<*, *>) {
+        write(properties = read() + properties)
+    }
+
+    fun renameTo(tag: String): Environment {
 
         val newFile = file.parentFile.resolve(tag.json)
 
@@ -39,10 +44,6 @@ value class Environment(val file: File) {
         return Environment(newFile)
     }
 
-    fun add(properties:  Map<*, *>) {
-        write(read() + properties)
-    }
-
     companion object {
 
         fun getSafe(dir: File, tag: String) = try {
@@ -51,13 +52,17 @@ value class Environment(val file: File) {
             Resource.Result.Failure(e)
         }
 
-        fun getOrCreate(dir: File, tag: String): Environment {
+        fun getOrCreate(dir: File, tag: String) = getOrCreate(FilePromise(dir, tag))
 
-            if (!dir.exists()) { dir.mkdir() }
+        fun getOrCreate(promise: FilePromise): Environment {
 
-            val file = dir.resolve(tag.json)
+            val file = promise.file
 
-            if (!file.exists()) { file.createNewFile() }
+            val environments = file.parentFile
+
+            if (!environments.exists()) environments.mkdir()
+
+            if (!file.exists()) file.createNewFile()
 
             return Environment(file)
         }

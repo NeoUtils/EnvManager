@@ -53,7 +53,10 @@ class Delete : Command(
         }
 
         val environments = tags.mapNotNull { tag ->
-            Environment.getSafe(paths.environmentsDir, tag).ifFailure {
+            Environment.getSafe(
+                dir = paths.environmentsDir,
+                tag = tag
+            ).ifFailure {
                 echoFormattedHelp(error = it)
             }.getOrNull()
         }

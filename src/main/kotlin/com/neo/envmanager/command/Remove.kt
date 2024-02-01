@@ -87,7 +87,9 @@ class Remove : Command(
 
         val propertiesCount = environment.read().size
 
-        if (YesNoPrompt("Delete all $propertiesCount properties?", terminal).ask() != true) throw Cancel()
+        val prompt = "Delete all $propertiesCount properties?"
+
+        if (YesNoPrompt(prompt, terminal).ask() != true) throw Cancel()
 
         // Clear environment
         environment.write(emptyMap<Any, Any>())

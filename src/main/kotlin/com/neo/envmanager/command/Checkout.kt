@@ -8,7 +8,6 @@ import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
-import extension.getOrThrow
 
 class Checkout : Command(
     help = "Checkout an environment"

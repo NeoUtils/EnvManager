@@ -13,11 +13,10 @@ import com.neo.envmanager.exception.error.NotSupportedTransferData
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.FilePromise
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
-import extension.getOrThrow
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.io.ByteArrayInputStream
@@ -43,9 +42,9 @@ class Save : Command(help = "Save target to an environment") {
 
         val properties = getProperties()
 
-        val environmentFile = paths.environmentsDir.resolve(tag.json)
+        val promise = FilePromise(paths.environmentsDir, tag)
 
-        if (environmentFile.exists() && this.tag != null) {
+        if (promise.file.exists() && this.tag != null) {
 
             echo(message = "! Environment $tag already exists")
 
@@ -55,7 +54,7 @@ class Save : Command(help = "Save target to an environment") {
         }
 
         Environment
-            .getOrCreate(paths.environmentsDir, tag)
+            .getOrCreate(promise)
             .write(properties.toMap())
 
         // Update target when current environment is modified
