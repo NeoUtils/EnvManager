@@ -1,6 +1,6 @@
 # Comando `remove`
 
-Utilize `remove` para excluir propriedades especificadas pelas suas chaves.
+Use o comando `remove` para excluir propriedades especificadas pelas suas chaves.
 
 **Para excluir uma única propriedade:**
 

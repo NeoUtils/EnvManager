@@ -1,6 +1,6 @@
 # Comando `delete`
 
-Exclua um ou mais ambientes com `delete`.
+Use o comando `delete` para excluir um ou mais ambientes.
 
 **Deletando um ambiente:**
 
@@ -14,5 +14,6 @@ $ envm delete <tag1> <tag2> ... [opções]
 ```
 
 ## Opções
+
 ### `--all` ou `-a`
 Exclua todos os ambientes.

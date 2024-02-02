@@ -1,6 +1,6 @@
 # Comando `install`
 
-Utilize o comando `install` para inicializar o **EnvManager** em um diretório.
+Use o comando `install` para inicializar o **EnvManager** em um diretório. Necessário para usar os demais comandos.
 
 ```shell
 $ envm install [opções]

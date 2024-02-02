@@ -1,6 +1,6 @@
 # Comando `list`
 
-Use `list` para exibir os ambientes salvos ou as propriedades de um ambiente específico.
+Use o comando `list` para exibir os ambientes salvos ou as propriedades de um ambiente específico.
 
 **Para listar todos os ambientes salvos:**
 

@@ -1,6 +1,6 @@
 # Comando `save`
 
-O comando `save` é utilizado para savar as propriedades do arquivo de propriedades alvo (**target**) no ambiente atual ou em um ambiente especificado após o comando.
+Use o comando `save` para savar as propriedades do arquivo de propriedades alvo (**target**) no ambiente atual ou em um ambiente especificado após o comando.
 
 **Para salvar no ambiente atual:**
 
