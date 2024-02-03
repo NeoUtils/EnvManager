@@ -5,7 +5,12 @@ import com.github.ajalt.mordant.rendering.Theme
 
 class KeyNotFound(
     key: String,
+    environment: String? = null,
     theme: Theme = Theme.Default
 ) : CliktError(
-    theme.danger(text = "✖ Key '$key' not found")
+    theme.danger(
+        text = environment?.let {
+            "✖ Key '$key' not found in '$environment'"
+        } ?:  "✖ Key '$key' not found"
+    )
 )
