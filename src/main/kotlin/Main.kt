@@ -1,5 +1,3 @@
-package com.neo.properties
+package com.neo.envmanager
 
-fun main() {
-    println("Hello World!")
-}
+fun main(args: Array<String>) = Envm().main(args)

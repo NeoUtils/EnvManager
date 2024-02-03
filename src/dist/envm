@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Use this script to direct commands to the installed EnvManager.
+
+# Identify system
+if [ -n "$PREFIX" ] && [ -d "$PREFIX/bin" ]; then
+  INSTALLATION="$PREFIX" # For Termux on Android
+else
+  INSTALLATION="/usr/local" # GNU/Linux
+fi
+
+"$INSTALLATION/lib/com.neo.envmanager/bin/EnvManager" "$@"
