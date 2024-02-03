@@ -1,138 +1,140 @@
+**english** | [português](README-PT.md)
+
 # EnvManager
 
 Easily control your environment properties.
 
-### Instalação
+### Installation
 
-Para instalar, baixe o arquivo de instalação disponível em [releases](https://github.com/Irineu333/EnvManager/releases),
-extraia e execute `install.sh` (Linux) com permissões de administrador. Para informações mais detalhadas consulte
-as [instruções de instalação](src/dist/INSTRUCTIONS.md).
+To install, download the installation file available at [releases](https://github.com/Irineu333/EnvManager/releases),
+extract, and run `install.sh` (Linux) with administrator permissions. For more detailed information, consult
+the [installation instructions](src/dist/INSTRUCTIONS.md).
 
-> **Compatibilidade:** GNU/Linux, Termux
+> **Compatibility:** GNU/Linux, Termux
 
-### Funcionamento
+### How It Works
 
-O **EnvManager** é ideal para projetos com **múltiplos ambientes**, onde as variáveis são gerenciadas por um **arquivo
-de propriedades** (denominado **target**) no formato `CHAVE=VALOR`. Com o **EnvManager**, você pode alternar entre
-diferentes ambientes e realizar outras manipulações **diretamente do terminal**.
+**EnvManager** is ideal for projects with **multiple environments**, where variables are managed by a **property
+file** (named **target**) in the `key=value` format. With **EnvManager**, you can switch between
+different environments and perform other manipulations **directly from the terminal**.
 
-### Uso
+### Usage
 
-Após a instalação, o **EnvManager** é acessado pelo comando `envm`, seguido de um comando e seus argumentos.
+After installation, **EnvManager** is accessed with the `envm` command, followed by a command and its arguments.
 
 ``` shell
 $ envm [options] <command> [arguments]
 ```
 
-> **Outras opções:** --path=\<caminho do projeto>, --version, --show-config
+> **Other options:** --path=<project path>, --version, --show-config
 
-Você pode obter as instruções de qualquer comando a opção `--help`.
+You can get the instructions for any command with the `--help` option.
 
 ``` shell
 $ envm --help
 ```
 
-[Mais informações](doc/envm.md).
+[More information](docs/english/envm.md)
 
-### Comandos Essenciais
+### Essential Commands
 
-Esses comandos cobrem as principais funcionalidades para uso diário.
+These commands cover the main functionalities for daily use.
 
 #### install
 
-Inicialize o **EnvManager** no diretório do seu projeto com o comando `install`.
+Initialize **EnvManager** in your project directory with the `install` command.
 
 ``` shell
 $ envm install
 ```
 
-> **Opções:** --target=\<caminho do target>, --force
+> **Options:** --target=<target path>, --force
 
-[Mais detalhes](doc/install.md).
+[More details](docs/english/install.md)
 
 #### save
 
-Salve as propriedades atuais como um ambiente usando `save`, seguido do nome do ambiente (denominado **tag**).
+Save the current properties as an environment using `save`, followed by the environment name (named **tag**).
 
 ``` shell
 $ envm save <tag>
 ```
 
-> **Opções:** --clipboard
+> **Options:** --clipboard
 
-[Mais detalhes](doc/save.md)
+[More details](docs/english/save.md)
 
 #### list
 
-Liste os ambientes salvos com o comando `list`.
+List the saved environments with the `list` command.
 
 ``` shell
 $ envm list
 ```
 
-Para listar propriedades de um ambiente específico, adicione a **tag** após o comando.
+To list properties of a specific environment, add the **tag** after the command.
 
 ``` shell
 $ envm list <tag>
 ```
 
-> **Opções:** --current, --target
+> **Options:** --current, --target
 
-[Mais detalhes](doc/list.md)
+[More details](docs/english/list.md)
 
 #### checkout
 
-Mude para um ambiente diferente com `checkout`.
+Switch to a different environment with `checkout`.
 
 ``` shell
 $ envm checkout <tag>
 ```
 
-> **Opções:** --force
+> **Options:** --force
 
-[Mais detalhes](doc/checkout.md)
+[More details](docs/english/checkout.md)
 
 #### delete
 
-Exclua um ou mais ambientes com `delete`.
+Delete one or more environments with `delete`.
 
 ``` shell
 $ envm delete <tags>
 ```
 
-> **Opções:** --all
+> **Options:** --all
 
-[Mais detalhes](doc/delete.md)
+[More details](docs/english/delete.md)
 
-### Outros Comandos
+### Other Commands
 
 #### set
 
-Adicione ou modifique propriedades com `set`.
+Add or modify properties with `set`.
 
 ``` shell
 $ envm set <properties>
 ```
 
-> **Opções:** --tag=\<tag>, --all, --target-only
+> **Options:** --tag=<tag>, --all, --target-only
 
-[Mais detalhes](doc/set.md)
+[More details](docs/english/set.md)
 
 #### remove
 
-Remova propriedades específicas com `remove`.
+Remove specific properties with `remove`.
 
 ``` shell
 $ envm remove <keys>
 ```
 
-> **Opções:** --tag=\<tag>, --all, --target-only
+> **Options:** --tag=<tag>, --all, --target-only
 
-[Mais detalhes](doc/remove.md)
+[More details](docs/english/remove.md)
 
 #### rename
 
-Renomeie um ambiente com `rename`.
+Rename an environment with `rename`.
 
 ``` shell
 $ envm rename <old-tag> <new-tag>
@@ -140,8 +142,11 @@ $ envm rename <old-tag> <new-tag>
 
 #### rollback
 
-Reverta alterações no **target**, sincronizando com o ambiente atual, usando `rollback`.
+Revert changes in the **target**, synchronizing with the current environment, using `rollback`.
 
 ``` shell
 $ envm rollback
 ```
+
+---
+Translated from [README-PT.md](README-PT.md) using [ChatGPT](https://chat.openai.com/share/9d76f100-2955-4e01-b5d9-5dc10ee9b6de)
