@@ -10,9 +10,13 @@ version = "1.0-DEV"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
+
+    // Resource
+    implementation("com.github.NeoUtils:Resource:1.1.0")
 
     // Gson
     implementation("com.google.code.gson:gson:2.8.9")

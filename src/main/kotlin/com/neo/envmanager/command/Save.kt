@@ -5,16 +5,16 @@ import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
-import com.neo.envmanager.com.neo.envmanager.exception.error.NotSupportedTransferData
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.com.neo.envmanager.util.mutedErrorOutput
 import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
+import com.neo.envmanager.exception.error.NotSupportedTransferData
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.FilePromise
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.extension.json
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
 import java.awt.Toolkit
@@ -26,6 +26,7 @@ class Save : Command(help = "Save target to an environment") {
 
     private val tag by tag().optional()
 
+    // TODO: migrate to set command
     private val fromClipboard by option(
         names = arrayOf("-c", "--clipboard"),
         help = "Save from clipboard"
@@ -42,9 +43,9 @@ class Save : Command(help = "Save target to an environment") {
 
         val properties = getProperties()
 
-        val environmentFile = paths.environmentsDir.resolve(tag.json)
+        val promise = FilePromise(paths.environmentsDir, tag)
 
-        if (environmentFile.exists() && this.tag != null) {
+        if (promise.file.exists() && this.tag != null) {
 
             echo(message = "! Environment $tag already exists")
 
@@ -54,7 +55,7 @@ class Save : Command(help = "Save target to an environment") {
         }
 
         Environment
-            .getOrCreate(paths.environmentsDir, tag)
+            .getOrCreate(promise)
             .write(properties.toMap())
 
         // Update target when current environment is modified
@@ -84,7 +85,7 @@ class Save : Command(help = "Save target to an environment") {
 
         val target = Target(config.targetPath)
 
-        val environment = Environment.get(paths.environmentsDir, tag)
+        val environment = Environment(paths.environmentsDir, tag)
 
         target.write(
             environment

@@ -19,6 +19,7 @@ import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
+import extension.getOrElse
 import java.io.File
 
 class Lister : Command(
@@ -85,9 +86,10 @@ class Lister : Command(
 
     private fun showEnvironmentByTag(tag: String) {
 
-        val environment = runCatching {
-            Environment.get(paths.environmentsDir, tag)
-        }.getOrElse {
+        val environment = Environment.getSafe(
+            dir = paths.environmentsDir,
+            tag = tag
+        ).getOrElse {
 
             echoFormattedHelp(EnvironmentNotFound(tag))
             echo(Instructions.SAVE)
@@ -121,14 +123,16 @@ class Lister : Command(
 
         environments.forEach { environment ->
 
-            val name = environment.nameWithoutExtension
+            val tag = environment.nameWithoutExtension
 
-            terminal.println(
+            echo(
                 Text(
-                    if (name == config.currentEnv) {
-                        TextStyles.bold(getCurrentName(environment))
+                    if (tag == config.currentEnv) {
+                        TextStyles.bold(
+                            getCurrentName(environment)
+                        )
                     } else {
-                        name
+                        tag
                     }
                 )
             )
@@ -137,16 +141,18 @@ class Lister : Command(
 
     private fun getCurrentName(environment: File): String {
 
+        val tag = environment.nameWithoutExtension
+
         val target = runCatching {
             Target(config.targetPath)
         }.getOrElse {
-            return environment.nameWithoutExtension
+            return tag
         }
 
         if (environment.readAsMap() == target.read().toMap()) {
-            return environment.nameWithoutExtension
+            return tag
         }
 
-        return environment.nameWithoutExtension + "*"
+        return "$tag*"
     }
 }

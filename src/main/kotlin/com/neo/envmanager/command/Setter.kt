@@ -12,6 +12,7 @@ import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.properties
 import com.neo.envmanager.util.extension.requireInstall
+import extension.getOrThrow
 import java.util.*
 
 class Setter : Command(
@@ -26,17 +27,17 @@ class Setter : Command(
 
     private val tag by option(
         names = arrayOf("-t", "--tag"),
-        help = "Environment tag"
+        help = "Specified environment tag; current environment is used by default"
     )
 
     private val all by option(
         names = arrayOf("-a", "--all"),
-        help = "Set properties to all environments"
+        help = "Set <properties> to all environments"
     ).flag()
 
     private val targetOnly by option(
         names = arrayOf("-o", "--target-only"),
-        help = "Set properties to target only"
+        help = "Set <properties> to target only"
     ).flag()
 
     private lateinit var config: Config

@@ -17,7 +17,7 @@ class Checkout : Command(
 
     private val force by option(
         names = arrayOf("-f", "--force"),
-        help = "Force checkout"
+        help = "Create environment if it does not exist"
     ).flag()
 
     override fun run() {
@@ -44,7 +44,7 @@ class Checkout : Command(
         return if (force) {
             Environment.getOrCreate(paths.environmentsDir, tag)
         } else {
-            Environment.get(paths.environmentsDir, tag)
+            Environment(paths.environmentsDir, tag)
         }
     }
 }

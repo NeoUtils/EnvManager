@@ -33,13 +33,14 @@ value class Target(val file: File) {
     }
 
     companion object {
-        fun getOrCreate(path: String): Target {
 
-            val file = File(path)
+        fun getOrCreate(path: String) = getOrCreate(FilePromise(path))
 
-            if (!file.exists()) {
-                file.createNewFile()
-            }
+        private fun getOrCreate(promise: FilePromise): Target {
+
+            val file = promise.file
+
+            if (!file.exists()) file.createNewFile()
 
             return Target(file)
         }

@@ -5,6 +5,7 @@ import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.requireInstall
+import extension.getOrThrow
 
 class Rollback : Command(
     help = "Rollback the target"
@@ -18,7 +19,7 @@ class Rollback : Command(
 
         val tag = config.currentEnv ?: throw NoCurrentEnvironment()
 
-        val environment = Environment.get(paths.environmentsDir, tag)
+        val environment = Environment(paths.environmentsDir, tag)
 
         target.write(environment.read().toProperties())
     }
