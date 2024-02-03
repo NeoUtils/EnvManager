@@ -8,7 +8,7 @@ Easily control your environment properties.
 
 To install, download the installation file available at [releases](https://github.com/Irineu333/EnvManager/releases),
 extract, and run `install.sh` (Linux) with administrator permissions. For more detailed information, consult
-the [installation instructions](src/dist/INSTRUCTIONS.md).
+the [installation instructions](src/dist/INSTALLATION.md).
 
 > **Compatibility:** GNU/Linux, Termux
 
