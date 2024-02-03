@@ -26,6 +26,7 @@ class Save : Command(help = "Save target to an environment") {
 
     private val tag by tag().optional()
 
+    // TODO: migrate to set command
     private val fromClipboard by option(
         names = arrayOf("-c", "--clipboard"),
         help = "Save from clipboard"
