@@ -1,4 +1,4 @@
-package  com.neo.envmanager.model
+package com.neo.envmanager.model
 
 import java.io.File
 

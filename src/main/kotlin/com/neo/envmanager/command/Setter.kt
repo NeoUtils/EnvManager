@@ -88,7 +88,7 @@ class Setter : CliktCommand(
 
             val environment = Environment.getOrCreate(installation.environmentsDir, tag)
 
-            environment.checkout(tag = tag)
+            environment.checkout()
         }
     }
 
@@ -104,11 +104,11 @@ class Setter : CliktCommand(
 
         // Checkout when set in current environment
         if (tag == config.currentEnv) {
-            environment.checkout(tag)
+            environment.checkout()
         }
     }
 
-    private fun Environment.checkout(tag: String) {
+    private fun Environment.checkout() {
 
         val target = Target(installation.config.targetPath)
 

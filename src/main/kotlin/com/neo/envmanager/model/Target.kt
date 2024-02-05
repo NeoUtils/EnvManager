@@ -1,5 +1,6 @@
 package com.neo.envmanager.model
 
+import Resource
 import com.neo.envmanager.exception.error.TargetNotFound
 import com.neo.envmanager.util.extension.iterable
 import java.io.File
@@ -33,6 +34,12 @@ value class Target(val file: File) {
     }
 
     companion object {
+
+        fun getSafe(path: String) = try {
+            Resource.Result.Success(Target(File(path)))
+        } catch (e: TargetNotFound) {
+            Resource.Result.Failure(e)
+        }
 
         fun getOrCreate(path: String) = getOrCreate(FilePromise(path))
 

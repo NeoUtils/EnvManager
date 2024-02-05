@@ -6,13 +6,6 @@ import com.neo.envmanager.model.Config
 import java.io.File
 import java.util.*
 
-fun File.readAsProperties(): Properties {
-
-    return Properties().apply {
-        load(inputStream())
-    }
-}
-
 fun File.readAsConfig(): Config {
 
     return Gson().fromJson(
@@ -32,5 +25,3 @@ fun File.readAsMap(): Map<String, String> {
         emptyMap()
     }
 }
-
-fun File.deleteChildren() = listFiles()?.forEach { it.deleteRecursively() }

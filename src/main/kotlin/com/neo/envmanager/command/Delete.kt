@@ -10,10 +10,11 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.exception.Cancel
+import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
-import com.neo.envmanager.util.extension.deleteChildren
+import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.success
 import extension.getOrNull
@@ -78,11 +79,15 @@ class Delete : CliktCommand(
 
     private fun deleteAll() {
 
-        val count = installation.environmentsDir.listFiles()?.size ?: 0
+        val environments = installation.environmentsDir.listFiles { _, name ->
+            name.endsWith(Constants.DOT_JSON)
+        } ?: throw NoEnvironmentsFound()
 
-        if (YesNoPrompt("Delete all $count environment?", terminal).ask() != true) throw Cancel()
+        val mustDeleteMessage = "Delete all ${environments.size} environment?"
 
-        installation.environmentsDir.deleteChildren()
+        if (YesNoPrompt(mustDeleteMessage, terminal).ask() != true) throw Cancel()
+
+        environments.forEach { it.delete() }
 
         clearCurrentEnvironment()
 

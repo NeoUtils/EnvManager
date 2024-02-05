@@ -143,9 +143,9 @@ class Lister : CliktCommand(
 
         val tag = environment.nameWithoutExtension
 
-        val target = runCatching {
-            Target(installation.config.targetPath)
-        }.getOrElse {
+        val target = Target.getSafe(
+            installation.config.targetPath
+        ).getOrElse {
             return tag
         }
 
