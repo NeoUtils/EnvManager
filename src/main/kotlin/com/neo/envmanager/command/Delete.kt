@@ -1,6 +1,7 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.core.Abort
+import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -8,18 +9,17 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
-import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
-import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.Installation
 import com.neo.envmanager.util.extension.deleteChildren
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.success
 import extension.getOrNull
 import extension.ifFailure
 
-class Delete : Command(
+class Delete : CliktCommand(
     help = "Delete one or more environments"
 ) {
 
@@ -32,11 +32,11 @@ class Delete : Command(
         help = "Delete all environments"
     ).flag()
 
-    private lateinit var config: Config
+    private lateinit var installation: Installation
 
     override fun run() {
 
-        config = requireInstall()
+        installation = requireInstall()
 
         if (all) {
             deleteAll()
@@ -54,7 +54,7 @@ class Delete : Command(
 
         val environments = tags.mapNotNull { tag ->
             Environment.getSafe(
-                dir = paths.environmentsDir,
+                dir = installation.environmentsDir,
                 tag = tag
             ).ifFailure {
                 echoFormattedHelp(error = it)
@@ -65,7 +65,7 @@ class Delete : Command(
 
         environments.forEach { it.file.delete() }
 
-        val currentTag = config.currentEnv ?: return
+        val currentTag = installation.config.currentEnv ?: return
 
         val currentHasDeleted = environments.any {
             it.file.nameWithoutExtension == currentTag
@@ -78,11 +78,11 @@ class Delete : Command(
 
     private fun deleteAll() {
 
-        val count = paths.environmentsDir.listFiles()?.size ?: 0
+        val count = installation.environmentsDir.listFiles()?.size ?: 0
 
         if (YesNoPrompt("Delete all $count environment?", terminal).ask() != true) throw Cancel()
 
-        paths.environmentsDir.deleteChildren()
+        installation.environmentsDir.deleteChildren()
 
         clearCurrentEnvironment()
 
@@ -90,7 +90,7 @@ class Delete : Command(
     }
 
     private fun clearCurrentEnvironment() {
-        config.update {
+        installation.config.update {
             it.copy(
                 currentEnv = null
             )

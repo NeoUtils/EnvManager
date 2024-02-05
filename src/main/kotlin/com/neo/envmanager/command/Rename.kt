@@ -1,13 +1,12 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
-import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.util.extension.requireInstall
-import extension.getOrThrow
 
-class Rename : Command(
+class Rename : CliktCommand(
     help = "Rename an environment"
 ) {
 
@@ -21,9 +20,9 @@ class Rename : Command(
 
     override fun run() {
 
-        val config = requireInstall()
+        val (config, environmentsDir) = requireInstall()
 
-        Environment(paths.environmentsDir, oldTag).renameTo(newTag)
+        Environment(environmentsDir, oldTag).renameTo(newTag)
 
         if (oldTag == config.currentEnv) {
             config.update {

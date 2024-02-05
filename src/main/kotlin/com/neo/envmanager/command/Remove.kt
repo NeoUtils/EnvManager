@@ -1,27 +1,26 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.core.Abort
+import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
-import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.KeyNotFound
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.exception.error.SpecifyKeysError
-import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.requireInstall
-import extension.getOrThrow
 import java.util.*
 
-class Remove : Command(
+class Remove : CliktCommand(
     help = "Remove one or more properties"
 ) {
 
@@ -44,11 +43,11 @@ class Remove : Command(
         help = "Remove <keys> from all environments or remove all properties"
     ).flag()
 
-    private lateinit var config: Config
+    private lateinit var installation: Installation
 
     override fun run() {
 
-        config = requireInstall()
+        installation = requireInstall()
 
         if (all && keys.isEmpty()) {
             clearProperties()
@@ -64,7 +63,7 @@ class Remove : Command(
 
             // clear target
 
-            val target = Target(config.targetPath)
+            val target = Target(installation.config.targetPath)
 
             target.write(Properties())
 
@@ -73,9 +72,9 @@ class Remove : Command(
 
         // clear environment
 
-        val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
+        val tag = tag ?: installation.config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = Environment(paths.environmentsDir, tag)
+        val environment = Environment(installation.environmentsDir, tag)
 
         val propertiesCount = environment.read().size
 
@@ -85,7 +84,7 @@ class Remove : Command(
 
         environment.write(emptyMap<Any, Any>())
 
-        if (tag == config.currentEnv) {
+        if (tag == installation.config.currentEnv) {
             updateTarget(tag)
         }
     }
@@ -111,7 +110,7 @@ class Remove : Command(
 
     private fun removeFromAllEnvironments() {
 
-        val environments = paths.environmentsDir.listFiles { _, name ->
+        val environments = installation.environmentsDir.listFiles { _, name ->
             name.endsWith(Constants.DOT_JSON)
         }
 
@@ -140,7 +139,7 @@ class Remove : Command(
 
             environment.write(properties)
 
-            if (tag == config.currentEnv) {
+            if (tag == installation.config.currentEnv) {
                 updateTarget(tag)
             }
         }
@@ -148,9 +147,9 @@ class Remove : Command(
 
     private fun removeFromEnvironment() {
 
-        val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
+        val tag = tag ?: installation.config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = Environment(paths.environmentsDir, tag)
+        val environment = Environment(installation.environmentsDir, tag)
 
         val properties = environment.read().toMutableMap()
 
@@ -170,14 +169,14 @@ class Remove : Command(
         environment.write(properties)
 
         // Checkout when set in current environment
-        if (tag == config.currentEnv) {
+        if (tag == installation.config.currentEnv) {
             updateTarget(tag)
         }
     }
 
     private fun removeFromTarget() {
 
-        val target = Target(config.targetPath)
+        val target = Target(installation.config.targetPath)
 
         val properties = target.read()
 
@@ -199,9 +198,9 @@ class Remove : Command(
 
     private fun updateTarget(tag: String) {
 
-        val target = Target(config.targetPath)
+        val target = Target(installation.config.targetPath)
 
-        val environment = Environment(paths.environmentsDir, tag)
+        val environment = Environment(installation.environmentsDir, tag)
 
         target.write(environment.read().toProperties())
     }

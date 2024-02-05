@@ -4,17 +4,16 @@ import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.google.gson.Gson
 import com.neo.envmanager.exception.error.NotInstalledError
-import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Paths
 import com.neo.envmanager.util.Instructions
 
-fun CliktCommand.requireInstall(): Config {
+fun CliktCommand.requireInstall(): Installation {
 
     val paths = checkNotNull(currentContext.findObject<Paths>())
 
-    if (!paths.isInstalled()) {
+    if (!paths.configFile.exists()) {
 
         echoFormattedHelp(NotInstalledError())
         echo(Instructions.INSTALL)
@@ -22,7 +21,10 @@ fun CliktCommand.requireInstall(): Config {
         throw Abort()
     }
 
-    return paths.configFile.readAsConfig()
+    return Installation(
+        config = paths.configFile.readAsConfig(),
+        environmentsDir = paths.environmentsDir
+    )
 }
 
 fun CliktCommand.tag() = argument(

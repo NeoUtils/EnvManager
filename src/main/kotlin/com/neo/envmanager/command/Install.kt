@@ -1,20 +1,22 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.core.Abort
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.requireObject
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
-import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.model.Paths
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.promptFile
 import com.neo.envmanager.util.extension.success
 
-class Install : Command(help = "Install environment control") {
+class Install : CliktCommand(help = "Install environment control") {
 
     private val mustForce by option(
         names = arrayOf("-f", "--force"),
@@ -30,9 +32,11 @@ class Install : Command(help = "Install environment control") {
         canBeFile = true
     )
 
+    private val paths by requireObject<Paths>()
+
     override fun run() {
 
-        if (!mustForce && paths.isInstalled()) {
+        if (!mustForce && !paths.configFile.exists()) {
             echo(success(text = "Already installed"))
             throw Abort()
         }

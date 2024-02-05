@@ -1,15 +1,15 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
-import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
 
-class Checkout : Command(
+class Checkout : CliktCommand(
     help = "Checkout an environment"
 ) {
 
@@ -22,12 +22,20 @@ class Checkout : Command(
 
     override fun run() {
 
-        val config = requireInstall()
+        val installation = requireInstall()
+
+        val config = installation.config
 
         val target = Target.getOrCreate(config.targetPath)
 
+        val environment = if (force) {
+            Environment.getOrCreate(installation.environmentsDir, tag)
+        } else {
+            Environment(installation.environmentsDir, tag)
+        }
+
         target.write(
-            getEnvironment()
+            environment
                 .read()
                 .toProperties()
         )
@@ -36,15 +44,6 @@ class Checkout : Command(
             it.copy(
                 currentEnv = tag
             )
-        }
-    }
-
-    private fun getEnvironment(): Environment {
-
-        return if (force) {
-            Environment.getOrCreate(paths.environmentsDir, tag)
-        } else {
-            Environment(paths.environmentsDir, tag)
         }
     }
 }
