@@ -15,6 +15,9 @@ repositories {
 
 dependencies {
 
+    // Mockk
+    testImplementation("io.mockk:mockk:1.12.0")
+
     // Resource
     implementation("com.github.NeoUtils:Resource:1.1.0")
 
