@@ -85,7 +85,7 @@ class Remove : CliktCommand(
         environment.write(emptyMap<Any, Any>())
 
         if (tag == installation.config.currentEnv) {
-            updateTarget(tag)
+            environment.updateTarget()
         }
     }
 
@@ -140,7 +140,7 @@ class Remove : CliktCommand(
             environment.write(properties)
 
             if (tag == installation.config.currentEnv) {
-                updateTarget(tag)
+                environment.updateTarget()
             }
         }
     }
@@ -170,7 +170,7 @@ class Remove : CliktCommand(
 
         // Checkout when set in current environment
         if (tag == installation.config.currentEnv) {
-            updateTarget(tag)
+            environment.updateTarget()
         }
     }
 
@@ -196,12 +196,10 @@ class Remove : CliktCommand(
         target.write(properties)
     }
 
-    private fun updateTarget(tag: String) {
+    private fun Environment.updateTarget() {
 
         val target = Target(installation.config.targetPath)
 
-        val environment = Environment(installation.environmentsDir, tag)
-
-        target.write(environment.read().toProperties())
+        target.write(read().toProperties())
     }
 }

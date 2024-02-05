@@ -34,7 +34,7 @@ class Save : CliktCommand(help = "Save target to an environment") {
 
     override fun run() {
 
-        val (config, environmentsDir) =  requireInstall().also { installation = it }
+        val (config, environmentsDir) = requireInstall().also { installation = it }
 
         // Get tag from current environment or from argument
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
@@ -52,23 +52,25 @@ class Save : CliktCommand(help = "Save target to an environment") {
             if (overwritePrompt.ask() != true) throw Cancel()
         }
 
-        Environment
-            .getOrCreate(promise)
-            .write(properties.toMap())
+        val environment = Environment.getOrCreate(promise)
+
+        environment.write(properties.toMap())
 
         // Update target when current environment is modified
         if (fromClipboard && tag == config.currentEnv) {
-            updateTarget(tag)
+            environment.updateTarget()
             return
         }
 
         // Checkout when save target without environment
         if (!fromClipboard && config.currentEnv == null) {
-            checkout(tag)
+            environment.checkout()
         }
     }
 
-    private fun checkout(tag: String) {
+    private fun Environment.checkout() {
+
+        val tag = file.nameWithoutExtension
 
         installation.config.update {
             it.copy(
@@ -76,20 +78,14 @@ class Save : CliktCommand(help = "Save target to an environment") {
             )
         }
 
-        updateTarget(tag)
+        updateTarget()
     }
 
-    private fun updateTarget(tag: String) {
+    private fun Environment.updateTarget() {
 
         val target = Target(installation.config.targetPath)
 
-        val environment = Environment(installation.environmentsDir, tag)
-
-        target.write(
-            environment
-                .read()
-                .toProperties()
-        )
+        target.write(read().toProperties())
     }
 
     private fun getProperties(): Properties {

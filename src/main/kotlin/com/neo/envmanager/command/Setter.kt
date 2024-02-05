@@ -60,7 +60,9 @@ class Setter : CliktCommand(
 
     private fun saveInTarget() {
 
-        Target(installation.config.targetPath).add(
+        val target = Target(installation.config.targetPath)
+
+        target.add(
             Properties().apply {
                 putAll(properties)
             }
@@ -82,7 +84,11 @@ class Setter : CliktCommand(
         }
 
         if (mustCheckout) {
-            checkout(tag = installation.config.currentEnv ?: return)
+            val tag = installation.config.currentEnv ?: return
+
+            val environment = Environment.getOrCreate(installation.environmentsDir, tag)
+
+            environment.checkout(tag = tag)
         }
     }
 
@@ -98,20 +104,14 @@ class Setter : CliktCommand(
 
         // Checkout when set in current environment
         if (tag == config.currentEnv) {
-            checkout(tag)
+            environment.checkout(tag)
         }
     }
 
-    private fun checkout(tag: String) {
+    private fun Environment.checkout(tag: String) {
 
         val target = Target(installation.config.targetPath)
 
-        val environment = Environment.getOrCreate(installation.environmentsDir, tag)
-
-        target.write(
-            environment
-                .read()
-                .toProperties()
-        )
+        target.write(read().toProperties())
     }
 }
