@@ -21,10 +21,7 @@ fun CliktCommand.requireInstall(): Installation {
         throw Abort()
     }
 
-    return Installation(
-        config = paths.configFile.readAsConfig(),
-        environmentsDir = paths.environmentsDir
-    )
+    return Installation(paths)
 }
 
 fun CliktCommand.tag() = argument(
