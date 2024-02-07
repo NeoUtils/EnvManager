@@ -1,16 +1,12 @@
 import com.github.ajalt.clikt.testing.test
-import com.google.gson.Gson
 import com.neo.envmanager.Envm
-import com.neo.envmanager.model.Config
-import com.neo.envmanager.model.Installation
-import com.neo.envmanager.model.Paths
+import com.neo.envmanager.command.installed
 import com.neo.envmanager.util.Package
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.io.File
 
 class EnvmTest {
 
@@ -49,16 +45,19 @@ class EnvmTest {
 
         val envm = Envm()
 
-        val config = Config(
-            targetPath = "target_path",
-            currentEnv = "current_path"
-        )
+        installed {
 
-        testInstallation(config) {
+            updateConfig {
+                it.copy(
+                    currentEnv = "current_path"
+                )
+            }
+
+            val projectPath = projectDir.path
 
             val results = listOf(
-                envm.test("--path=build/tmp/test -c"),
-                envm.test("--path=build/tmp/test --show-config")
+                envm.test("--path=$projectPath -c"),
+                envm.test("--path=$projectPath --show-config")
             )
 
             for (result in results) {
@@ -67,7 +66,7 @@ class EnvmTest {
 
                 assertEquals(
                     listOf(
-                        "target: target_path",
+                        "target: build/tmp/test/test.properties",
                         "current: current_path"
                     ),
                     result.output.trimEnd().split("\n")
@@ -76,35 +75,7 @@ class EnvmTest {
         }
     }
 
-    private fun testInstallation(
-        config: Config,
-        toTestDir: File = File("build/tmp/test"),
-        block: (Installation) -> Unit
-    ) {
-
-        val paths = Paths(toTestDir).apply {
-            installationDir.mkdir()
-            environmentsDir.mkdir()
-
-            configFile.writeText(
-                Gson().toJson(
-                    config
-                )
-            )
-        }
-
-        block(
-            Installation(
-                config = config,
-                environmentsDir = paths.environmentsDir
-            )
-        )
-
-        toTestDir.deleteRecursively()
-    }
-
 }
-
 
 fun genRandomVersion(): String {
 

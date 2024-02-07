@@ -30,16 +30,40 @@ class InstallationHelp(
 
         if (installed) return
 
-        paths.installationDir.mkdir()
+        setup()
 
-        targetFile.createNewFile()
+        paths.installationDir.mkdir()
 
         paths.configFile.writeText(
             Gson().toJson(
                 Config(
-                    targetPath = targetFile.path,
+                    targetPath = targetFile.path
                 )
             )
         )
     }
+
+    fun updateConfig(block: (Config) -> Config) {
+
+        val config = paths.configFile.readText().let {
+            Gson().fromJson(it, Config::class.java)
+        }
+
+        paths.configFile.writeText(
+            Gson().toJson(block(config))
+        )
+    }
+}
+
+fun installed(
+    installation: InstallationHelp = InstallationHelp(),
+    block: InstallationHelp.() -> Unit
+) {
+
+    installation.clear()
+    installation.install()
+
+    block(installation)
+
+    installation.clear()
 }
