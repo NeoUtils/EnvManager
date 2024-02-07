@@ -1,6 +1,7 @@
 import com.github.ajalt.clikt.testing.test
 import com.neo.envmanager.Envm
-import com.neo.envmanager.command.installed
+import com.neo.envmanager.help.ResultCode
+import com.neo.envmanager.help.installed
 import com.neo.envmanager.util.Package
 import io.mockk.every
 import io.mockk.mockkObject

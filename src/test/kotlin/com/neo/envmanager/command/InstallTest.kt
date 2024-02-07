@@ -1,14 +1,13 @@
 package com.neo.envmanager.command
 
-import ResultCode
+import com.neo.envmanager.help.InstallationHelp
+import com.neo.envmanager.help.ResultCode
 import com.github.ajalt.clikt.testing.test
 import com.neo.envmanager.Envm
-import com.neo.envmanager.model.Paths
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
 
 class InstallTest {
 

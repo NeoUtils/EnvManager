@@ -1,4 +1,4 @@
-package com.neo.envmanager.command
+package com.neo.envmanager.help
 
 import com.google.gson.Gson
 import com.neo.envmanager.model.Config
