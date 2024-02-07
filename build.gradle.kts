@@ -15,9 +15,6 @@ repositories {
 
 dependencies {
 
-    // Mockk
-    testImplementation("io.mockk:mockk:1.12.0")
-
     // Resource
     implementation("com.github.NeoUtils:Resource:1.1.0")
 
@@ -27,8 +24,11 @@ dependencies {
     // Clikt
     implementation("com.github.ajalt.clikt:clikt:4.2.1")
 
-    // Tests
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    // Mockk
+    testImplementation("io.mockk:mockk:1.12.0")
+
+    // Kotest
+    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
 }
 
 tasks.test {

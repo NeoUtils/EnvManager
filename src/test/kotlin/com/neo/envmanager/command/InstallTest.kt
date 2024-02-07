@@ -1,26 +1,21 @@
 package com.neo.envmanager.command
 
-import com.neo.envmanager.help.InstallationHelp
-import com.neo.envmanager.help.ResultCode
 import com.github.ajalt.clikt.testing.test
 import com.neo.envmanager.Envm
-import org.junit.jupiter.api.AfterEach
+import com.neo.envmanager.help.InstallationHelp
+import com.neo.envmanager.help.ResultCode
+import io.kotest.core.spec.style.FunSpec
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
-class InstallTest {
+class InstallTest : FunSpec({
 
-    private val installation = InstallationHelp()
+    val installation = InstallationHelp()
 
-    @BeforeEach
-    @AfterEach
-    fun setup() {
+    beforeTest {
         installation.clear()
     }
 
-    @Test
-    fun `should install successfully`() {
+    test("should install successfully") {
 
         // given
 
@@ -40,8 +35,7 @@ class InstallTest {
         assertEquals(ResultCode.SUCCESS.code, result.statusCode)
     }
 
-    @Test
-    fun `should not install if already installed`() {
+    test("should not install if already installed") {
 
         // given
 
@@ -60,4 +54,4 @@ class InstallTest {
 
         assertEquals(ResultCode.FAILURE.code, result.statusCode)
     }
-}
+})
