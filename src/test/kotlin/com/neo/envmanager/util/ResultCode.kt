@@ -1,4 +1,4 @@
-package com.neo.envmanager.help
+package com.neo.envmanager.util
 
 enum class ResultCode(val code: Int) {
     SUCCESS(code = 0),

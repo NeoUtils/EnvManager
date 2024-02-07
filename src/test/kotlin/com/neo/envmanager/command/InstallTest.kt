@@ -2,56 +2,85 @@ package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.testing.test
 import com.neo.envmanager.Envm
-import com.neo.envmanager.help.InstallationHelp
-import com.neo.envmanager.help.ResultCode
-import io.kotest.core.spec.style.FunSpec
+import com.neo.envmanager.util.InstallationHelp
+import com.neo.envmanager.util.ResultCode
+import io.kotest.core.spec.style.ShouldSpec
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 
-class InstallTest : FunSpec({
+class InstallTest : ShouldSpec({
+
+    val envm = Envm()
 
     val installation = InstallationHelp()
 
-    beforeTest {
-        installation.clear()
+    val (projectPath, targetPath) = installation
+
+    beforeTest { installation.clear() }
+
+    afterSpec { installation.clear() }
+
+    context("uninstalled") {
+
+        beforeTest {
+            installation.setup()
+        }
+
+        should("install successfully, when run install") {
+
+            val args = args("--path=${projectPath.path}", "install")
+
+            val result = envm.test(args, targetPath.path)
+
+            assertEquals(ResultCode.SUCCESS.code, result.statusCode)
+            assertTrue(installation.installed)
+        }
+
+        should("install successfully, when run install --target=<path>") {
+
+            val args = args("--path=${projectPath.path}", "install --target=${targetPath.path}")
+
+            val result = envm.test(args)
+
+            assertEquals(ResultCode.SUCCESS.code, result.statusCode)
+            assertTrue(installation.installed)
+        }
     }
 
-    test("should install successfully") {
+    context("installed") {
 
-        // given
+        beforeTest {
+            installation.install()
+        }
 
-        installation.setup()
+        should("don't install, when run install") {
 
-        val envm = Envm()
+            val args = args("--path=${projectPath.path}", "install")
 
-        val projectPath = installation.projectDir.path
-        val targetPath = installation.targetFile.path
+            val result = envm.test(args, targetPath.path)
 
-        // when
+            assertEquals(ResultCode.FAILURE.code, result.statusCode)
+        }
 
-        val result = envm.test("--path=$projectPath install", targetPath)
+        should("don't install, when run install --target=<path>") {
 
-        // then
+            val args = args("--path=${projectPath.path}", "install --target=${targetPath.path}")
 
-        assertEquals(ResultCode.SUCCESS.code, result.statusCode)
-    }
+            val result = envm.test(args)
 
-    test("should not install if already installed") {
+            assertEquals(ResultCode.FAILURE.code, result.statusCode)
+        }
 
-        // given
+        should("install successfully, when run install --force") {
 
-        installation.install()
+            val args = args("--path=${projectPath.path}", "install --force")
 
-        val envm = Envm()
+            val result = envm.test(args, targetPath.path)
 
-        val projectPath = installation.projectDir.path
-        val targetPath = installation.targetFile.path
-
-        // when
-
-        val result = envm.test("--path=$projectPath install", targetPath)
-
-        // then
-
-        assertEquals(ResultCode.FAILURE.code, result.statusCode)
+            assertEquals(ResultCode.SUCCESS.code, result.statusCode)
+            assertTrue(installation.installed)
+        }
     }
 })
+
+fun args(vararg args: String) = args.joinToString(" ")
