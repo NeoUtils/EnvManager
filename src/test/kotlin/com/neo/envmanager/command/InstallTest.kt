@@ -6,19 +6,18 @@ import com.neo.envmanager.Envm
 import com.neo.envmanager.model.Paths
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class InstallTest {
 
-    private val testDir = File("build/tmp/test")
-    private val targetFile = File(testDir, "test.properties")
+    private val installation = InstallationHelp()
 
-    private val paths = Paths(testDir)
-
+    @BeforeEach
     @AfterEach
     fun setup() {
-        testDir.listFiles()?.forEach { it.deleteRecursively() }
+        installation.clear()
     }
 
     @Test
@@ -26,14 +25,18 @@ class InstallTest {
 
         // given
 
-        targetFile.createNewFile()
-        paths.installationDir.deleteRecursively()
+        installation.setup()
 
         val envm = Envm()
 
+        val projectPath = installation.projectDir.path
+        val targetPath = installation.targetFile.path
+
         // when
 
-        val result = envm.test("--path=${testDir.path} install", targetFile.path)
+        val result = envm.test("--path=$projectPath install", targetPath)
+
+        // then
 
         assertEquals(ResultCode.SUCCESS.code, result.statusCode)
     }
@@ -43,15 +46,18 @@ class InstallTest {
 
         // given
 
-        targetFile.createNewFile()
-        paths.installationDir.mkdir()
-        paths.configFile.createNewFile()
+        installation.install()
 
         val envm = Envm()
 
+        val projectPath = installation.projectDir.path
+        val targetPath = installation.targetFile.path
+
         // when
 
-        val result = envm.test("--path=${testDir.path} install", targetFile.path)
+        val result = envm.test("--path=$projectPath install", targetPath)
+
+        // then
 
         assertEquals(ResultCode.FAILURE.code, result.statusCode)
     }
