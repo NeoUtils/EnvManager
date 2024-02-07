@@ -36,7 +36,7 @@ class Install : CliktCommand(help = "Install environment control") {
 
     override fun run() {
 
-        if (!mustForce && !paths.configFile.exists()) {
+        if (!mustForce && paths.configFile.exists()) {
             echo(success(text = "Already installed"))
             throw Abort()
         }
