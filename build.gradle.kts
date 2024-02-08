@@ -29,6 +29,9 @@ dependencies {
 
     // Kotest
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
+
+    // Tests
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
 tasks.test {
