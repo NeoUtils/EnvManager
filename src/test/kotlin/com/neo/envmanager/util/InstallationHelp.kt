@@ -1,6 +1,5 @@
 package com.neo.envmanager.util
 
-import com.google.gson.Gson
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Paths
 import java.io.File
@@ -34,24 +33,15 @@ data class InstallationHelp(
 
         paths.installationDir.mkdir()
 
-        paths.configFile.writeText(
-            Gson().toJson(
-                Config(
-                    targetFile = targetFile.path
-                )
-            )
-        )
+        Config(
+            targetFile = targetFile
+        ).writeTo(paths.configFile)
     }
 
     fun updateConfig(block: (Config) -> Config) {
-
-        val config = paths.configFile.readText().let {
-            Gson().fromJson(it, Config::class.java)
-        }
-
-        paths.configFile.writeText(
-            Gson().toJson(block(config))
-        )
+        block(
+            Config.loadFrom(paths.configFile)
+        ).writeTo(paths.configFile)
     }
 }
 

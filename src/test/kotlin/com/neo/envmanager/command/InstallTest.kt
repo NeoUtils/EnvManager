@@ -98,9 +98,7 @@ fun InstallationHelp.check() {
     assertTrue(paths.configFile.exists(), "Config file not found")
     assertTrue(paths.gitIgnoreFile.exists(), ".gitignore file not found")
 
-    val config = paths.configFile.readText().let {
-        Gson().fromJson(it, Config::class.java)
-    }
+    val config = Config.loadFrom(paths.configFile)
 
-    assertEquals(targetFile.path, config.targetFile)
+    assertEquals(targetFile.path, config.targetFile.path)
 }
