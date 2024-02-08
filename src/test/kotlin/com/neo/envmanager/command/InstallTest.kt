@@ -1,7 +1,6 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.testing.test
-import com.google.gson.Gson
 import com.neo.envmanager.Envm
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.InstallationHelp

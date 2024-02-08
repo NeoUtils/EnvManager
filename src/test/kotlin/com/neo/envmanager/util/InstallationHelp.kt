@@ -13,14 +13,14 @@ data class InstallationHelp(
     val installed get() = paths.configFile.exists()
     val ready get() = targetFile.exists()
 
-    fun setup() {
+    fun setup() = apply {
 
-        if (ready) return
+        if (ready) return@apply
 
         targetFile.createNewFile()
     }
 
-    fun clear() {
+    fun clear() = apply{
         paths.installationDir.deleteRecursively()
         targetFile.delete()
     }
