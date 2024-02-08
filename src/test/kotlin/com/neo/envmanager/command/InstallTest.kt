@@ -1,10 +1,13 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.testing.test
+import com.google.gson.Gson
 import com.neo.envmanager.Envm
+import com.neo.envmanager.model.Config
 import com.neo.envmanager.util.InstallationHelp
 import com.neo.envmanager.util.ResultCode
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 
@@ -32,8 +35,9 @@ class InstallTest : ShouldSpec({
 
             val result = envm.test(args, targetPath.path)
 
-            assertEquals(ResultCode.SUCCESS.code, result.statusCode)
-            assertTrue(installation.installed)
+            ResultCode.SUCCESS.code shouldBe result.statusCode
+
+            installation.check()
         }
 
         should("install successfully, when run install --target=<path>") {
@@ -42,8 +46,9 @@ class InstallTest : ShouldSpec({
 
             val result = envm.test(args)
 
-            assertEquals(ResultCode.SUCCESS.code, result.statusCode)
-            assertTrue(installation.installed)
+            ResultCode.SUCCESS.code shouldBe  result.statusCode
+
+            installation.check()
         }
     }
 
@@ -59,7 +64,7 @@ class InstallTest : ShouldSpec({
 
             val result = envm.test(args, targetPath.path)
 
-            assertEquals(ResultCode.FAILURE.code, result.statusCode)
+            ResultCode.FAILURE.code shouldBe result.statusCode
         }
 
         should("don't install, when run install --target=<path>") {
@@ -68,7 +73,7 @@ class InstallTest : ShouldSpec({
 
             val result = envm.test(args)
 
-            assertEquals(ResultCode.FAILURE.code, result.statusCode)
+            ResultCode.FAILURE.code shouldBe result.statusCode
         }
 
         should("install successfully, when run install --force") {
@@ -77,10 +82,25 @@ class InstallTest : ShouldSpec({
 
             val result = envm.test(args, targetPath.path)
 
-            assertEquals(ResultCode.SUCCESS.code, result.statusCode)
-            assertTrue(installation.installed)
+            ResultCode.SUCCESS.code shouldBe result.statusCode
+
+            installation.check()
         }
     }
 })
 
 fun args(vararg args: String) = args.joinToString(" ")
+
+fun InstallationHelp.check() {
+
+    assertTrue(ready, "Not ready")
+    assertTrue(installed, "Not installed")
+    assertTrue(paths.configFile.exists(), "Config file not found")
+    assertTrue(paths.gitIgnoreFile.exists(), ".gitignore file not found")
+
+    val config = paths.configFile.readText().let {
+        Gson().fromJson(it, Config::class.java)
+    }
+
+    assertEquals(targetFile.path, config.targetPath)
+}

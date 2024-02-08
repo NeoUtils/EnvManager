@@ -43,7 +43,7 @@ class Install : CliktCommand(help = "Install environment control") {
 
         paths.installationDir.mkdir()
 
-        createGitIgnore()
+        paths.gitIgnoreFile.writeText("*")
 
         finished(createConfig())
     }
@@ -73,11 +73,5 @@ class Install : CliktCommand(help = "Install environment control") {
         return Config(
             targetPath = target.path
         ).update()
-    }
-
-    private fun createGitIgnore() {
-        paths.installationDir
-            .resolve(Constants.DOT_GITIGNORE)
-            .writeText("*")
     }
 }

@@ -12,7 +12,7 @@ data class InstallationHelp(
 ) {
 
     val installed get() = paths.configFile.exists()
-    private val ready get() = targetFile.exists()
+    val ready get() = targetFile.exists()
 
     fun setup() {
 

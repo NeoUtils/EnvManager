@@ -8,5 +8,6 @@ class Paths(val projectDir: File) {
     val installationDir = projectDir.resolve(Constants.INSTALL_FOLDER_PATH)
     val configFile = installationDir.resolve(Constants.CONFIG_FILE_PATH)
     val environmentsDir = installationDir.resolve(Constants.ENVIRONMENTS_FOLDER_PATH)
+    val gitIgnoreFile = installationDir.resolve(Constants.DOT_GITIGNORE)
 
 }
