@@ -37,7 +37,7 @@ data class InstallationHelp(
         paths.configFile.writeText(
             Gson().toJson(
                 Config(
-                    targetPath = targetFile.path
+                    targetFile = targetFile.path
                 )
             )
         )

@@ -35,15 +35,13 @@ value class Target(val file: File) {
 
     companion object {
 
-        fun getSafe(path: String) = try {
-            Resource.Result.Success(Target(File(path)))
+        fun getSafe(file: File) = try {
+            Resource.Result.Success(Target(file))
         } catch (e: TargetNotFound) {
             Resource.Result.Failure(e)
         }
 
-        fun getOrCreate(path: String) = getOrCreate(FilePromise(path))
-
-        private fun getOrCreate(promise: FilePromise): Target {
+        fun getOrCreate(promise: FilePromise): Target {
 
             val file = promise.file
 

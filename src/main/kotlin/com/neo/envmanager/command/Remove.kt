@@ -63,7 +63,7 @@ class Remove : CliktCommand(
 
             // clear target
 
-            val target = Target(installation.config.targetPath)
+            val target = Target(installation.config.targetFile)
 
             target.write(Properties())
 
@@ -176,7 +176,7 @@ class Remove : CliktCommand(
 
     private fun removeFromTarget() {
 
-        val target = Target(installation.config.targetPath)
+        val target = Target(installation.config.targetFile)
 
         val properties = target.read()
 
@@ -198,7 +198,7 @@ class Remove : CliktCommand(
 
     private fun Environment.updateTarget() {
 
-        val target = Target(installation.config.targetPath)
+        val target = Target(installation.config.targetFile)
 
         target.write(read().toProperties())
     }

@@ -72,7 +72,7 @@ class Envm : CliktCommand(
 
         val message = buildString {
 
-            append("target: ${dim(config.targetPath)}")
+            append("target: ${dim(config.targetFile.path)}")
 
             config.currentEnv?.let { append("\ncurrent: ${dim(it)}") }
         }

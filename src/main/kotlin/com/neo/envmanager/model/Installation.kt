@@ -1,6 +1,5 @@
 package com.neo.envmanager.model
 
-import com.neo.envmanager.util.extension.readAsConfig
 import java.io.File
 
 data class Installation(
@@ -8,7 +7,7 @@ data class Installation(
     val environmentsDir: File
 ) {
     constructor(paths: Paths) : this(
-        config = paths.configFile.readAsConfig(),
+        config = Config.loadFrom(paths.configFile),
         environmentsDir = paths.environmentsDir
     )
 }

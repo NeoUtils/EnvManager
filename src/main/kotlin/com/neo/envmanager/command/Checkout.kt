@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.FilePromise
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
@@ -26,7 +27,7 @@ class Checkout : CliktCommand(
 
         val config = installation.config
 
-        val target = Target.getOrCreate(config.targetPath)
+        val target = Target.getOrCreate(FilePromise(config.targetFile))
 
         val environment = if (force) {
             Environment.getOrCreate(installation.environmentsDir, tag)

@@ -16,11 +16,9 @@ import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
-import com.neo.envmanager.util.extension.readAsMap
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.tag
 import extension.getOrElse
-import java.io.File
 
 class Lister : CliktCommand(
     name = "list",
@@ -72,7 +70,7 @@ class Lister : CliktCommand(
 
     private fun showTarget() {
 
-        val target = Target(installation.config.targetPath)
+        val target = Target(installation.config.targetFile)
 
         target.read().forEach { (key, value) ->
 
@@ -121,36 +119,48 @@ class Lister : CliktCommand(
             throw Abort()
         }
 
-        environments.forEach { environment ->
+        environments.forEach { environmentFile ->
 
-            val tag = environment.nameWithoutExtension
+            val environment = Environment.getSafe(
+                environmentFile
+            ).getOrElse {
+                return@forEach
+            }
+
+            val isCurrentEnvironment = environment.tag == installation.config.currentEnv
+
+            val target = Target.getSafe(
+                installation.config.targetFile
+            ).getOrElse { null }
 
             echo(
                 Text(
-                    if (tag == installation.config.currentEnv) {
-                        TextStyles.bold(
-                            getCurrentName(environment)
-                        )
-                    } else {
-                        tag
+                    when {
+                        target == null -> {
+                            environment.tag
+                        }
+
+                        isCurrentEnvironment && environment.isCurrent(target) -> {
+                            TextStyles.bold(environment.tag)
+                        }
+
+                        isCurrentEnvironment -> {
+                            TextStyles.bold(environment.tag.plus("*"))
+                        }
+
+                        else -> {
+                            environment.tag
+                        }
                     }
                 )
             )
         }
     }
+}
 
-    private fun getCurrentName(environment: File): String {
+fun Environment.isCurrent(
+    target: Target
+): Boolean {
 
-        val tag = environment.nameWithoutExtension
-
-        val target = Target.getSafe(
-            installation.config.targetPath
-        ).getOrElse {
-            return tag
-        }
-
-        if (environment.readAsMap() == target.read().toMap()) return tag
-
-        return "$tag*"
-    }
+    return read() == target.read().toMap()
 }

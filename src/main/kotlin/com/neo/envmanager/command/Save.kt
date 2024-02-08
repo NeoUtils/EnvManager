@@ -83,7 +83,7 @@ class Save : CliktCommand(help = "Save target to an environment") {
 
     private fun Environment.updateTarget() {
 
-        val target = Target(installation.config.targetPath)
+        val target = Target(installation.config.targetFile)
 
         target.write(read().toProperties())
     }
@@ -114,6 +114,6 @@ class Save : CliktCommand(help = "Save target to an environment") {
             }
         }
 
-        return Target(installation.config.targetPath).read()
+        return Target(installation.config.targetFile).read()
     }
 }

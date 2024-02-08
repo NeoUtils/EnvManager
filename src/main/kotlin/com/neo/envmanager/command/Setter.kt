@@ -60,7 +60,7 @@ class Setter : CliktCommand(
 
     private fun saveInTarget() {
 
-        val target = Target(installation.config.targetPath)
+        val target = Target(installation.config.targetFile)
 
         target.add(
             Properties().apply {
@@ -110,7 +110,7 @@ class Setter : CliktCommand(
 
     private fun Environment.checkout() {
 
-        val target = Target(installation.config.targetPath)
+        val target = Target(installation.config.targetFile)
 
         target.write(read().toProperties())
     }

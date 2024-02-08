@@ -102,5 +102,5 @@ fun InstallationHelp.check() {
         Gson().fromJson(it, Config::class.java)
     }
 
-    assertEquals(targetFile.path, config.targetPath)
+    assertEquals(targetFile.path, config.targetFile)
 }

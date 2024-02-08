@@ -4,9 +4,8 @@ import Resource
 import com.google.gson.Gson
 import com.neo.envmanager.com.neo.envmanager.exception.error.EnvironmentAlreadyExists
 import com.neo.envmanager.exception.error.EnvironmentNotFound
-import com.neo.envmanager.util.Constants
+import com.neo.envmanager.util.MapTypeToken
 import com.neo.envmanager.util.extension.json
-import com.neo.envmanager.util.extension.readAsMap
 import java.io.File
 
 @JvmInline
@@ -19,8 +18,18 @@ value class Environment(val file: File) {
         if (!file.exists()) throw EnvironmentNotFound(file.nameWithoutExtension)
     }
 
+    val tag get() = file.nameWithoutExtension
+
     fun read(): Map<String, String> {
-        return file.readAsMap()
+
+        return runCatching<Map<String, String>> {
+            Gson().fromJson(
+                file.readText(),
+                MapTypeToken.type
+            )
+        }.getOrElse {
+            emptyMap()
+        }
     }
 
     fun write(properties: Map<*, *>) {
@@ -46,11 +55,13 @@ value class Environment(val file: File) {
 
     companion object {
 
-        fun getSafe(dir: File, tag: String) = try {
-            Resource.Result.Success(Environment(dir.resolve(tag.json)))
+        fun getSafe(file: File) = try {
+            Resource.Result.Success(Environment(file))
         } catch (e: EnvironmentNotFound) {
             Resource.Result.Failure(e)
         }
+
+        fun getSafe(dir: File, tag: String) =  getSafe(dir.resolve(tag.json))
 
         fun getOrCreate(dir: File, tag: String) = getOrCreate(FilePromise(dir, tag))
 

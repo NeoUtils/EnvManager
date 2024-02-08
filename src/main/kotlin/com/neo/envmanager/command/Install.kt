@@ -11,7 +11,6 @@ import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Paths
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.Instructions
 import com.neo.envmanager.util.extension.promptFile
 import com.neo.envmanager.util.extension.success
@@ -53,7 +52,7 @@ class Install : CliktCommand(help = "Install environment control") {
         echo(success(text = "Installed"))
 
         val properties = Target(
-            config.targetPath
+            config.targetFile
         ).read()
 
         if (properties.isNotEmpty()) {
@@ -71,7 +70,7 @@ class Install : CliktCommand(help = "Install environment control") {
         )
 
         return Config(
-            targetPath = target.path
+            targetFile = target
         ).update()
     }
 }
