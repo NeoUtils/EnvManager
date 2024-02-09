@@ -31,46 +31,68 @@ class SetterTest : ShouldSpec({
             installation.install()
         }
 
-        should("don't set, when no specify environment") {
+        context("current environment defined") {
 
-            val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
+            beforeTest {
+                installation.updateConfig {
+                    it.copy(currentEnv = "test")
+                }
+            }
 
-            result.statusCode shouldBe ResultCode.FAILURE.code
+            should("set successfully in current environment") {
+
+                val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
+
+                result.statusCode shouldBe ResultCode.SUCCESS.code
+
+                // check environment
+
+                val environment = Environment(installation.paths.environmentsDir, "test")
+
+                environment.read() shouldBe mapOf("KEY" to "VALUE")
+
+                // check target
+
+                val target = Target(installation.targetFile)
+
+                target.read() shouldBe mapOf("KEY" to "VALUE")
+            }
         }
 
-        should("set successfully in current environment") {
+        context("current environment not defined") {
 
-            installation.updateConfig { it.copy(currentEnv = "test") }
+            should("don't set, when no specify environment") {
 
-            val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
+                val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
 
-            result.statusCode shouldBe ResultCode.SUCCESS.code
+                result.statusCode shouldBe ResultCode.FAILURE.code
+            }
 
-            val environment = Environment(installation.paths.environmentsDir, "test")
+            should("set successfully in specified environment") {
 
-            environment.read() shouldBe mapOf("KEY" to "VALUE")
-        }
+                val result = envm.test("--path=${projectDir.path} set KEY=VALUE --tag=test")
 
-        should("set successfully in specified environment") {
+                result.statusCode shouldBe ResultCode.SUCCESS.code
 
-            val result = envm.test("--path=${projectDir.path} set KEY=VALUE --tag=test")
+                // check environment
 
-            result.statusCode shouldBe ResultCode.SUCCESS.code
+                val environment = Environment(installation.paths.environmentsDir, "test")
 
-            val environment = Environment(installation.paths.environmentsDir, "test")
+                environment.read() shouldBe mapOf("KEY" to "VALUE")
+            }
 
-            environment.read() shouldBe mapOf("KEY" to "VALUE")
-        }
+            should("set successfully only on target") {
 
-        should("set successfully in target") {
+                val result = envm.test("--path=${projectDir.path} set KEY=VALUE --target-only")
 
-            val result = envm.test("--path=${projectDir.path} set KEY=VALUE --target-only")
+                result.statusCode shouldBe ResultCode.SUCCESS.code
 
-            result.statusCode shouldBe ResultCode.SUCCESS.code
+                // check target
 
-            val target = Target(installation.targetFile)
+                val target = Target(installation.targetFile)
 
-            target.read() shouldBe mapOf("KEY" to "VALUE")
+                target.read() shouldBe mapOf("KEY" to "VALUE")
+            }
         }
     }
 
