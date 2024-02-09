@@ -1,15 +1,17 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.testing.test
-import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.neo.envmanager.Envm
 import com.neo.envmanager.exception.error.NotInstalledError
+import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.InstallationHelp
 import com.neo.envmanager.util.ResultCode
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldEndWith
 
 class SetterTest : ShouldSpec({
 
@@ -35,9 +37,13 @@ class SetterTest : ShouldSpec({
 
         should("set successfully in current environment") {
 
+            // given
+
             installation.updateConfig {
                 it.copy(currentEnv = "test")
             }
+
+            // run
 
             val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
 
@@ -47,27 +53,37 @@ class SetterTest : ShouldSpec({
 
             // check environment
 
-            val environment = Environment(installation.paths.environmentsDir, "test")
-
-            environment.read() shouldBe mapOf("KEY" to "VALUE")
+            Environment(
+                installation.paths.environmentsDir,
+                tag = "test"
+            ).read() shouldBe mapOf("KEY" to "VALUE")
 
             // check target
 
-            val target = Target(installation.targetFile)
-
-            target.read() shouldBe mapOf("KEY" to "VALUE")
+            Target(
+                installation.targetFile
+            ).read() shouldBe mapOf("KEY" to "VALUE")
         }
 
         should("don't set, when no specify environment") {
+
+            // run
 
             val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
 
             // check result
 
             result.statusCode shouldBe ResultCode.FAILURE.code
+
+
+            // check error
+
+            result.stderr.trimEnd() shouldEndWith SpecifyEnvironmentError().message
         }
 
         should("set successfully in specified environment") {
+
+            // run
 
             val result = envm.test("--path=${projectDir.path} set KEY=VALUE --tag=test")
 
@@ -76,26 +92,32 @@ class SetterTest : ShouldSpec({
             result.statusCode shouldBe ResultCode.SUCCESS.code
 
             // check environment
-
-            val environment = Environment(installation.paths.environmentsDir, "test")
-
-            environment.read() shouldBe mapOf("KEY" to "VALUE")
+            Environment(
+                installation.paths.environmentsDir,
+                tag = "test"
+            ).read() shouldBe mapOf("KEY" to "VALUE")
         }
 
         should("set successfully only on target") {
 
+            // run
+
             val result = envm.test("--path=${projectDir.path} set KEY=VALUE --target-only")
+
+            // check result
 
             result.statusCode shouldBe ResultCode.SUCCESS.code
 
             // check target
 
-            val target = Target(installation.targetFile)
-
-            target.read() shouldBe mapOf("KEY" to "VALUE")
+            Target(
+                installation.targetFile
+            ).read() shouldBe mapOf("KEY" to "VALUE")
         }
 
         should("set successfully in all environments") {
+
+            // given
 
             val tags = listOf("test1", "test2", "test3")
 
@@ -105,6 +127,8 @@ class SetterTest : ShouldSpec({
                 )
             }
 
+            // run
+
             val result = envm.test("--path=${projectDir.path} set KEY=VALUE --all")
 
             // check result
@@ -113,28 +137,28 @@ class SetterTest : ShouldSpec({
 
             // check environments
 
-            environments.forEach {
-                it.read() shouldBe mapOf("KEY" to "VALUE")
+            for (environment in environments) {
+                environment.read() shouldBe mapOf("KEY" to "VALUE")
             }
         }
     }
 
     context("not installed") {
 
-         should("return correct error message") {
+        should("return correct error message") {
 
-             // run
+            // run
 
-             val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
+            val result = envm.test("--path=${projectDir.path} set KEY=VALUE --tag=test")
 
-             // check result
+            // check result
 
-             result.statusCode shouldBe ResultCode.FAILURE.code
+            result.statusCode shouldBe ResultCode.FAILURE.code
 
-             // check output
+            // check error
 
-             result.stderr.trimEnd() shouldBe "✖ Not installed"
-         }
+            result.stderr.trimEnd() shouldBeEqual NotInstalledError().message
+        }
     }
 
 })
