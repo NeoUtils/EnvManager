@@ -1,7 +1,9 @@
 package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.testing.test
+import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.neo.envmanager.Envm
+import com.neo.envmanager.exception.error.NotInstalledError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.InstallationHelp
@@ -115,6 +117,24 @@ class SetterTest : ShouldSpec({
                 it.read() shouldBe mapOf("KEY" to "VALUE")
             }
         }
+    }
+
+    context("not installed") {
+
+         should("return correct error message") {
+
+             // run
+
+             val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
+
+             // check result
+
+             result.statusCode shouldBe ResultCode.FAILURE.code
+
+             // check output
+
+             result.stderr.trimEnd() shouldBe "✖ Not installed"
+         }
     }
 
 })
