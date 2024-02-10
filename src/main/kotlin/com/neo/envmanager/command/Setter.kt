@@ -73,23 +73,19 @@ class Setter : CliktCommand(
 
         val environments = installation.environmentsDir.listFiles { _, name ->
             name.endsWith(Constants.DOT_JSON)
-        }
+        }?.map(::Environment)
 
         if (environments.isNullOrEmpty()) throw NoEnvironmentsFound()
 
-        environments.forEach { Environment(it).add(properties.toMap()) }
-
-        val mustCheckout = environments.any {
-            it.nameWithoutExtension == installation.config.currentEnv
+        environments.forEach {
+            it.add(properties.toMap())
         }
 
-        if (mustCheckout) {
-            val tag = installation.config.currentEnv ?: return
+        val currentEnvironment = environments.find {
+            it.tag == installation.config.currentEnv
+        } ?: return
 
-            val environment = Environment.getOrCreate(installation.environmentsDir, tag)
-
-            environment.checkout()
-        }
+        currentEnvironment.checkout()
     }
 
     private fun saveInEnvironment() {
