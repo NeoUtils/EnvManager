@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.neo.envmanager.com.neo.envmanager.util.extension.getEnvironments
-import com.neo.envmanager.exception.error.NoEnvironmentsFound
+import com.neo.envmanager.exception.error.CanNotFindEnvironments
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
@@ -75,7 +75,7 @@ class Setter : CliktCommand(
             .environmentsDir
             .getEnvironments()
             .ifEmpty {
-                throw NoEnvironmentsFound()
+                throw CanNotFindEnvironments()
             }
 
         environments.forEach {

@@ -11,7 +11,7 @@ import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.com.neo.envmanager.util.extension.jsonFiles
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.KeyNotFound
-import com.neo.envmanager.exception.error.NoEnvironmentsFound
+import com.neo.envmanager.exception.error.CanNotFindEnvironments
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.exception.error.SpecifyKeysError
 import com.neo.envmanager.model.Environment
@@ -114,7 +114,7 @@ class Remove : CliktCommand(
             .environmentsDir
             .jsonFiles()
             .ifEmpty {
-                throw NoEnvironmentsFound()
+                throw CanNotFindEnvironments()
             }
 
         val mustDeleteAllMessage = "Delete these properties from all ${environments.size} environments?"

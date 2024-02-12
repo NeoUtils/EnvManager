@@ -11,7 +11,7 @@ import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.com.neo.envmanager.util.extension.jsonFiles
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.exception.Cancel
-import com.neo.envmanager.exception.error.NoEnvironmentsFound
+import com.neo.envmanager.exception.error.CanNotFindEnvironments
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
@@ -82,7 +82,7 @@ class Delete : CliktCommand(
         val environments = installation
             .environmentsDir
             .jsonFiles()
-            .ifEmpty { throw NoEnvironmentsFound() }
+            .ifEmpty { throw CanNotFindEnvironments() }
 
         val mustDeleteMessage = "Delete all ${environments.size} environment?"
 

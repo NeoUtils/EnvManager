@@ -12,7 +12,7 @@ import com.neo.envmanager.com.neo.envmanager.exception.error.NoCurrentEnvironmen
 import com.neo.envmanager.com.neo.envmanager.util.extension.getEnvironments
 import com.neo.envmanager.com.neo.envmanager.util.extension.isSynchronized
 import com.neo.envmanager.exception.error.EnvironmentNotFound
-import com.neo.envmanager.exception.error.NoEnvironmentsFound
+import com.neo.envmanager.exception.error.CanNotFindEnvironments
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
@@ -113,7 +113,7 @@ class Lister : CliktCommand(
 
         if (environments.isEmpty()) {
 
-            echoFormattedHelp(NoEnvironmentsFound())
+            echoFormattedHelp(CanNotFindEnvironments())
             echo(Instructions.SAVE)
 
             throw Abort()

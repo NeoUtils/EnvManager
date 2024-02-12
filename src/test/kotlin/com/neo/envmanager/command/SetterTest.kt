@@ -2,6 +2,7 @@ package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.testing.test
 import com.neo.envmanager.Envm
+import com.neo.envmanager.exception.error.CanNotFindEnvironments
 import com.neo.envmanager.exception.error.NotInstalledError
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Environment
@@ -140,6 +141,21 @@ class SetterTest : ShouldSpec({
             for (environment in environments) {
                 environment.read() shouldBe mapOf("KEY" to "VALUE")
             }
+        }
+
+        should("return error correctly, when run 'set in all' without environments") {
+
+            // run
+
+            val result = envm.test("--path=${projectDir.path} set KEY=VALUE --all")
+
+            // check result
+
+            result.statusCode shouldBe ResultCode.FAILURE.code
+
+            // check error
+
+            result.stderr.trimEnd() shouldBe CanNotFindEnvironments().message
         }
     }
 
