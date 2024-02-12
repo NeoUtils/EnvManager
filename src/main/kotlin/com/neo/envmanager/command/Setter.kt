@@ -4,12 +4,12 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import com.neo.envmanager.com.neo.envmanager.util.extension.getEnvironments
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.properties
 import com.neo.envmanager.util.extension.requireInstall
 import java.util.*
@@ -71,11 +71,12 @@ class Setter : CliktCommand(
 
     private fun saveInAllEnvironments() {
 
-        val environments = installation.environmentsDir.listFiles { _, name ->
-            name.endsWith(Constants.DOT_JSON)
-        }?.map(::Environment)
-
-        if (environments.isNullOrEmpty()) throw NoEnvironmentsFound()
+        val environments = installation
+            .environmentsDir
+            .getEnvironments()
+            .ifEmpty {
+                throw NoEnvironmentsFound()
+            }
 
         environments.forEach {
             it.add(properties.toMap())

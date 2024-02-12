@@ -8,13 +8,13 @@ import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
+import com.neo.envmanager.com.neo.envmanager.util.extension.jsonFiles
 import com.neo.envmanager.com.neo.envmanager.util.extension.update
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
-import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.extension.success
 import extension.getOrNull
@@ -79,9 +79,10 @@ class Delete : CliktCommand(
 
     private fun deleteAll() {
 
-        val environments = installation.environmentsDir.listFiles { _, name ->
-            name.endsWith(Constants.DOT_JSON)
-        } ?: throw NoEnvironmentsFound()
+        val environments = installation
+            .environmentsDir
+            .jsonFiles()
+            .ifEmpty { throw NoEnvironmentsFound() }
 
         val mustDeleteMessage = "Delete all ${environments.size} environment?"
 

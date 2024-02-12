@@ -9,6 +9,8 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.widgets.Text
 import com.neo.envmanager.com.neo.envmanager.exception.error.NoCurrentEnvironment
+import com.neo.envmanager.com.neo.envmanager.util.extension.getEnvironments
+import com.neo.envmanager.com.neo.envmanager.util.extension.isSynchronized
 import com.neo.envmanager.exception.error.EnvironmentNotFound
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Environment
@@ -107,11 +109,9 @@ class Lister : CliktCommand(
 
     private fun showAllEnvironments() {
 
-        val environments = installation.environmentsDir.listFiles { _, name ->
-            name.endsWith(Constants.DOT_JSON)
-        }
+        val environments = installation.environmentsDir.getEnvironments()
 
-        if (environments.isNullOrEmpty()) {
+        if (environments.isEmpty()) {
 
             echoFormattedHelp(NoEnvironmentsFound())
             echo(Instructions.SAVE)
@@ -119,19 +119,13 @@ class Lister : CliktCommand(
             throw Abort()
         }
 
-        environments.forEach { environmentFile ->
+        val target = Target.getSafe(
+            installation.config.targetFile
+        ).getOrElse { null }
 
-            val environment = Environment.getSafe(
-                environmentFile
-            ).getOrElse {
-                return@forEach
-            }
+        environments.forEach { environment ->
 
             val isCurrentEnvironment = environment.tag == installation.config.currentEnv
-
-            val target = Target.getSafe(
-                installation.config.targetFile
-            ).getOrElse { null }
 
             echo(
                 Text(
@@ -140,7 +134,7 @@ class Lister : CliktCommand(
                             environment.tag
                         }
 
-                        isCurrentEnvironment && environment.isCurrent(target) -> {
+                        isCurrentEnvironment && environment.isSynchronized(target) -> {
                             TextStyles.bold(environment.tag)
                         }
 
@@ -158,9 +152,3 @@ class Lister : CliktCommand(
     }
 }
 
-fun Environment.isCurrent(
-    target: Target
-): Boolean {
-
-    return read() == target.read().toMap()
-}

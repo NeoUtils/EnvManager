@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.mordant.terminal.YesNoPrompt
+import com.neo.envmanager.com.neo.envmanager.util.extension.jsonFiles
 import com.neo.envmanager.exception.Cancel
 import com.neo.envmanager.exception.error.KeyNotFound
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
@@ -16,7 +17,6 @@ import com.neo.envmanager.exception.error.SpecifyKeysError
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.requireInstall
 import java.util.*
 
@@ -110,15 +110,16 @@ class Remove : CliktCommand(
 
     private fun removeFromAllEnvironments() {
 
-        val environments = installation.environmentsDir.listFiles { _, name ->
-            name.endsWith(Constants.DOT_JSON)
-        }
+        val environments = installation
+            .environmentsDir
+            .jsonFiles()
+            .ifEmpty {
+                throw NoEnvironmentsFound()
+            }
 
-        if (environments.isNullOrEmpty()) throw NoEnvironmentsFound()
+        val mustDeleteAllMessage = "Delete these properties from all ${environments.size} environments?"
 
-        val prompt = "Delete these properties from all ${environments.size} environments?"
-
-        if (YesNoPrompt(prompt = prompt, terminal).ask() != true) throw Cancel()
+        if (YesNoPrompt(prompt = mustDeleteAllMessage, terminal).ask() != true) throw Cancel()
 
         for (environment in environments.map(::Environment)) {
 
