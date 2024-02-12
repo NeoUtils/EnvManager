@@ -118,6 +118,12 @@ class SetterTest : ShouldSpec({
 
         should("set successfully in all environments") {
 
+            installation.updateConfig {
+                it.copy(
+                    currentEnv = "test2"
+                )
+            }
+
             // given
 
             val tags = listOf("test1", "test2", "test3")
@@ -141,6 +147,12 @@ class SetterTest : ShouldSpec({
             for (environment in environments) {
                 environment.read() shouldBe mapOf("KEY" to "VALUE")
             }
+
+            // check target
+
+            Target(
+                installation.targetFile
+            ).read() shouldBe mapOf("KEY" to "VALUE")
         }
 
         should("return error correctly, when run 'set in all' without environments") {
