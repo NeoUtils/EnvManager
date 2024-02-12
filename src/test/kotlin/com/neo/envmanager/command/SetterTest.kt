@@ -46,7 +46,7 @@ class SetterTest : ShouldSpec({
 
             // run
 
-            val result = envm.test("--path=${projectDir.path} set KEY=VALUE")
+            val result = envm.test("--path=${projectDir.path} set KEY=VALUE KEY2=VALUE2")
 
             // check result
 
@@ -57,13 +57,13 @@ class SetterTest : ShouldSpec({
             Environment(
                 installation.paths.environmentsDir,
                 tag = "test"
-            ).read() shouldBe mapOf("KEY" to "VALUE")
+            ).read() shouldBe mapOf("KEY" to "VALUE", "KEY2" to "VALUE2")
 
             // check target
 
             Target(
                 installation.targetFile
-            ).read() shouldBe mapOf("KEY" to "VALUE")
+            ).read() shouldBe mapOf("KEY" to "VALUE", "KEY2" to "VALUE2")
         }
 
         should("don't set, when no specify environment") {
