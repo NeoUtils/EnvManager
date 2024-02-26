@@ -9,6 +9,8 @@ import java.util.*
 @JvmInline
 value class Target(val file: File) {
 
+    val name get() = file.nameWithoutExtension
+
     constructor(path: String) : this(File(path))
 
     init {
