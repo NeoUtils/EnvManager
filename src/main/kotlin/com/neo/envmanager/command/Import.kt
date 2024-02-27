@@ -20,7 +20,7 @@ class Import : CliktCommand(
 
     private val dataFile by argument(
         name = "data-file",
-        help = "Environments data file (${Constants.DOT_ENVM})"
+        help = "Environment(s) data file (${Constants.DOT_ENVM})"
     ).file(
         mustExist = true,
         canBeDir = false,
