@@ -8,4 +8,6 @@ value class FilePromise(val file: File) {
 
     constructor(dir: File, tag: String) : this(dir.resolve(tag.json))
     constructor(path: String) : this(File(path))
+
+    fun exists() = file.exists()
 }
