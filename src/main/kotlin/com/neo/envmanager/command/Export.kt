@@ -2,6 +2,7 @@ package com.neo.envmanager.command
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Environment
@@ -13,7 +14,7 @@ import com.neo.envmanager.util.gson
 import java.io.File
 
 class Export : CliktCommand(
-    help = "Export all environments"
+    help = "Export environments"
 ) {
 
     private val destinationDir by argument(
@@ -25,11 +26,25 @@ class Export : CliktCommand(
         canBeFile = false
     )
 
+    private val tag by option(
+        help = "Specific tag (optional"
+    )
+
     private lateinit var installation: Installation
 
     override fun run() {
 
         installation = requireInstall()
+
+        if (tag != null) {
+            exportSpecificEnvironment(tag!!)
+            return
+        }
+
+        exportAllEnvironments()
+    }
+
+    private fun exportAllEnvironments() {
 
         val environments = installation.environmentsDir.listFiles { _, name ->
             name.endsWith(Constants.DOT_JSON)
@@ -41,7 +56,9 @@ class Export : CliktCommand(
             throw NoEnvironmentsFound()
         }
 
-        getExportFile().writeText(
+        val target = Target(installation.config.targetPath)
+
+        getExportFile(target.name).writeText(
             gson.toJson(
                 buildMap {
                     environments.forEach {
@@ -52,20 +69,27 @@ class Export : CliktCommand(
         )
     }
 
-    private fun getExportFile(): File {
+    private fun exportSpecificEnvironment(tag: String) {
+
+        val environment = Environment(installation.environmentsDir, tag)
+
+        getExportFile(tag).writeText(
+            gson.toJson(
+                mapOf(environment.tag to environment.read())
+            )
+        )
+    }
+
+    private fun getExportFile(name: String): File {
 
         var file: File
         var count = 0
-
-        val target = Target(
-            installation.config.targetPath
-        )
 
         do {
 
             val filePath = buildString {
 
-                append(target.name)
+                append(name)
 
                 if (count > 0) {
                     append("($count)")
