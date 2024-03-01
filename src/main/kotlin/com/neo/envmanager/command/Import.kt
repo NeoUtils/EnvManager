@@ -18,15 +18,14 @@ class Import : CliktCommand(
     help = "Import environments"
 ) {
 
-    private val dataFile by argument(
-        name = "data-file",
-        help = "Environment(s) data file (${Constants.DOT_ENVM})"
+    private val file by argument(
+        help = "Environment(s) file (${Constants.DOT_ENVM})"
     ).file(
         mustExist = true,
         canBeDir = false,
         canBeFile = true
     ).validate { file ->
-        if (file.name.endsWith(Constants.DOT_ENVM).not()) {
+        if (!file.name.endsWith(Constants.DOT_ENVM)) {
             fail("Invalid extension '${file.extension}'")
         }
     }
@@ -37,7 +36,7 @@ class Import : CliktCommand(
 
         val type = MapTypeToken<MapTypeToken<String>>().type
 
-        val environments = gson.fromJson<Map<String, Map<String, String>>>(dataFile.readText(), type)
+        val environments = gson.fromJson<Map<String, Map<String, String>>>(file.readText(), type)
 
         environments.forEach { (tag, map) ->
 
