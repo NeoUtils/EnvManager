@@ -145,3 +145,7 @@ Revert changes in the **target**, synchronizing with the current environment, us
 ``` shell
 $ envm rollback
 ```
+
+### Others commands
+
+See the documentation for the other commands at [docs](/docs).
