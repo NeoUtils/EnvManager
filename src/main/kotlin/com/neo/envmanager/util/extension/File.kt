@@ -1,6 +1,7 @@
 package com.neo.envmanager.util.extension
 
 import com.neo.envmanager.model.Config
+import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.MapTypeToken
 import com.neo.envmanager.util.gson
 import java.io.File
@@ -25,4 +26,11 @@ fun File.readAsMap(): Map<String, String> {
     }.getOrElse {
         emptyMap()
     }
+}
+
+fun File.jsonFiles(): Array<out File> {
+
+    return listFiles { _, name ->
+        name.endsWith(Constants.DOT_JSON)
+    }.orEmpty()
 }

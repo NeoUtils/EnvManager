@@ -9,6 +9,7 @@ import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.mordant.terminal.YesNoPrompt
+import com.neo.envmanager.com.neo.envmanager.util.extension.environments
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
@@ -66,13 +67,9 @@ class Export : CliktCommand(
 
     private fun exportAllEnvironments() {
 
-        val environments = installation.environmentsDir.listFiles { _, name ->
-            name.endsWith(Constants.DOT_JSON)
-        }?.map {
-            Environment(it)
-        }
+        val environments = installation.environments()
 
-        if (environments.isNullOrEmpty()) {
+        if (environments.isEmpty()) {
             throw NoEnvironmentsFound()
         }
 
