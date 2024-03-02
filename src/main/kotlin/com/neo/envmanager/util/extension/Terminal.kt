@@ -26,6 +26,10 @@ fun Terminal.promptFile(
                     ConversionResult.Invalid("Path cannot be empty")
                 }
 
+                input.isBlank() -> {
+                    ConversionResult.Invalid("Path cannot be blank")
+                }
+
                 mustExist && !file.exists() -> {
                     ConversionResult.Invalid("Path does not exist")
                 }
