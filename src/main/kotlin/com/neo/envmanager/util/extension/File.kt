@@ -34,3 +34,18 @@ fun File.jsonFiles(): Array<out File> {
         name.endsWith(Constants.DOT_JSON)
     }.orEmpty()
 }
+
+fun File.resolveCollision(): File {
+
+    var file = this
+    var index = 0
+
+    val name = file.nameWithoutExtension
+    val extension = file.extension
+
+    while (file.exists()) {
+        file = File(file.parent, "$name(${++index}).$extension")
+    }
+
+    return file
+}

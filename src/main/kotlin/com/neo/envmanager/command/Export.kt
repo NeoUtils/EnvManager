@@ -18,6 +18,7 @@ import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.envm
 import com.neo.envmanager.util.extension.promptFile
 import com.neo.envmanager.util.extension.requireInstall
+import com.neo.envmanager.util.extension.resolveCollision
 import com.neo.envmanager.util.gson
 import java.io.File
 
@@ -109,7 +110,7 @@ class Export : CliktCommand(
             }
         }
 
-        output.resolve(name.envm).writeText(
+        output.resolve(name.envm).resolveCollision().writeText(
             gson.toJson(
                 buildMap {
                     environments.forEach {
@@ -120,3 +121,4 @@ class Export : CliktCommand(
         )
     }
 }
+
