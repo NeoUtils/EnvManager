@@ -9,12 +9,13 @@ import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.mordant.terminal.YesNoPrompt
+import com.neo.envmanager.com.neo.envmanager.util.NotBlankValidation
 import com.neo.envmanager.com.neo.envmanager.util.extension.environments
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
-import com.neo.envmanager.util.Constants
+import com.neo.envmanager.util.extension.envm
 import com.neo.envmanager.util.extension.promptFile
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.gson
@@ -34,7 +35,8 @@ class Export : CliktCommand(
         terminal.promptFile(
             text = "Output directory",
             canBeDir = true,
-            canBeFile = false
+            canBeFile = false,
+            default = File("output")
         )
     }
 
@@ -50,9 +52,9 @@ class Export : CliktCommand(
 
         if (!output.exists()) {
 
-            val mustCreateMessage = "Output directory '${output.path}' does not exist. Create it?"
+            echo("Output directory '${output.path}' does not exist.")
 
-            if (YesNoPrompt(mustCreateMessage, terminal).ask() != true) throw Abort()
+            if (YesNoPrompt("Create it?", terminal).ask() != true) throw Abort()
 
             output.mkdirs()
         }
@@ -73,26 +75,35 @@ class Export : CliktCommand(
             throw NoEnvironmentsFound()
         }
 
-        val target = Target(installation.config.targetPath)
-
-        getExportFile(target.name).writeText(
-            gson.toJson(
-                buildMap {
-                    environments.forEach {
-                        put(it.tag, it.read())
-                    }
-                }
-            )
-        )
+        writeExportFile(environments)
     }
 
     private fun exportSpecificEnvironment() {
 
-        val environments = tag.map { Environment(installation.environmentsDir, it) }
+        val environments = tag.map {
+            Environment(installation.environmentsDir, it)
+        }
 
-        val name = environments.singleOrNull()?.tag ?: Target(installation.config.targetPath).name
+        writeExportFile(environments)
+    }
 
-        getExportFile(name).writeText(
+    private fun writeExportFile(
+        environments: List<Environment>
+    ) {
+
+        val default by lazy {
+            Target(installation.config.targetPath)
+        }
+
+        val name = checkNotNull(
+            terminal.prompt(
+                prompt = "Choose a name for the export file",
+                default = environments.singleOrNull()?.tag ?: default.name,
+                convert = NotBlankValidation
+            )
+        )
+
+        output.resolve(name.envm).writeText(
             gson.toJson(
                 buildMap {
                     environments.forEach {
@@ -101,32 +112,5 @@ class Export : CliktCommand(
                 }
             )
         )
-    }
-
-    private fun getExportFile(name: String): File {
-
-        var file: File
-        var count = 0
-
-        do {
-
-            val filePath = buildString {
-
-                append(name)
-
-                if (count > 0) {
-                    append("($count)")
-                }
-
-                append(Constants.DOT_ENVM)
-            }
-
-            file = output.resolve(filePath)
-
-            count++
-
-        } while (file.exists())
-
-        return file
     }
 }
