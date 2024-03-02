@@ -1,5 +1,3 @@
-**english** | [português](README-PT.md)
-
 # EnvManager
 
 Easily control your environment properties.
@@ -34,7 +32,7 @@ You can get the instructions for any command with the `--help` option.
 $ envm --help
 ```
 
-[More information](docs/english/envm.md)
+[More information](docs/envm.md)
 
 ### Essential Commands
 
@@ -50,7 +48,7 @@ $ envm install
 
 > **Options:** --target=<target path>, --force
 
-[More details](docs/english/install.md)
+[More details](docs/install.md)
 
 #### save
 
@@ -62,7 +60,7 @@ $ envm save <tag>
 
 > **Options:** --clipboard
 
-[More details](docs/english/save.md)
+[More details](docs/save.md)
 
 #### list
 
@@ -80,7 +78,7 @@ $ envm list <tag>
 
 > **Options:** --current, --target
 
-[More details](docs/english/list.md)
+[More details](docs/list.md)
 
 #### checkout
 
@@ -92,7 +90,7 @@ $ envm checkout <tag>
 
 > **Options:** --force
 
-[More details](docs/english/checkout.md)
+[More details](docs/checkout.md)
 
 #### delete
 
@@ -104,7 +102,7 @@ $ envm delete <tags>
 
 > **Options:** --all
 
-[More details](docs/english/delete.md)
+[More details](docs/delete.md)
 
 ### Other Commands
 
@@ -118,7 +116,7 @@ $ envm set <properties>
 
 > **Options:** --tag=<tag>, --all, --target-only
 
-[More details](docs/english/set.md)
+[More details](docs/set.md)
 
 #### remove
 
@@ -130,7 +128,7 @@ $ envm remove <keys>
 
 > **Options:** --tag=<tag>, --all, --target-only
 
-[More details](docs/english/remove.md)
+[More details](docs/remove.md)
 
 #### rename
 
@@ -148,5 +146,6 @@ Revert changes in the **target**, synchronizing with the current environment, us
 $ envm rollback
 ```
 
----
-Translated from [README-PT.md](README-PT.md) using [ChatGPT](https://chat.openai.com/share/9d76f100-2955-4e01-b5d9-5dc10ee9b6de)
+### Others commands
+
+See the documentation for the other commands at [docs](/docs).

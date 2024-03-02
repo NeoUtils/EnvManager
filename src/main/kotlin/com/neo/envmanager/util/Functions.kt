@@ -5,7 +5,7 @@ import java.io.PrintStream
 
 fun <R> mutedErrorOutput(
     function: () -> R
-) : R {
+): R {
     val old = System.err
 
     System.setErr(PrintStream(OutputStream.nullOutputStream()))

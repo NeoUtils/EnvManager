@@ -43,9 +43,11 @@ class Install : CliktCommand(help = "Install environment control") {
 
         paths.installationDir.mkdir()
 
+        val config = createConfig()
+
         createGitIgnore()
 
-        finished(createConfig())
+        finished(config)
     }
 
     private fun finished(config: Config) {

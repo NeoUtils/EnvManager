@@ -48,7 +48,9 @@ class Envm : CliktCommand(
             Rename(),
             Setter(),
             Remove(),
-            Rollback()
+            Rollback(),
+            Export(),
+            Import()
         )
     }
 
