@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.validate
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.mordant.terminal.YesNoPrompt
+import com.neo.envmanager.com.neo.envmanager.util.EnvironmentsFileValidation
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.FilePromise
 import com.neo.envmanager.util.Constants
@@ -23,11 +24,7 @@ class Import : CliktCommand(
         mustExist = true,
         canBeDir = false,
         canBeFile = true
-    ).validate { file ->
-        if (!file.name.endsWith(Constants.DOT_ENVM)) {
-            fail("Invalid extension '${file.extension}'")
-        }
-    }
+    ).validate(EnvironmentsFileValidation)
 
     override fun run() {
 
