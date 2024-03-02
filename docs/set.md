@@ -16,7 +16,7 @@ $ envm set KEY1=VALUE1 KEY2=VALUE2 ... [options]
 
 ## Options
 
-### `--tag` or `-t`
+### `--tag`
 Allows specifying the target environment for the properties. In the absence of this option, the current environment is used.
 
 ```shell
