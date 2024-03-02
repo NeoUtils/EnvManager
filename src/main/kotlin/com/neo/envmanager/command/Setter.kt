@@ -1,21 +1,20 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import com.neo.envmanager.core.Command
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.exception.error.SpecifyEnvironmentError
-import com.neo.envmanager.model.Config
 import com.neo.envmanager.model.Environment
+import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
 import com.neo.envmanager.util.extension.properties
 import com.neo.envmanager.util.extension.requireInstall
-import extension.getOrThrow
 import java.util.*
 
-class Setter : Command(
+class Setter : CliktCommand(
     name = "set",
     help = "Set one or more properties",
 ) {
@@ -26,7 +25,7 @@ class Setter : Command(
     ).properties(required = true)
 
     private val tag by option(
-        names = arrayOf("-t", "--tag"),
+        names = arrayOf("--tag"),
         help = "Specified environment tag; current environment is used by default"
     )
 
@@ -40,11 +39,11 @@ class Setter : Command(
         help = "Set <properties> to target only"
     ).flag()
 
-    private lateinit var config: Config
+    private lateinit var installation: Installation
 
     override fun run() {
 
-        config = requireInstall()
+        installation = requireInstall()
 
         if (targetOnly) {
             saveInTarget()
@@ -61,7 +60,9 @@ class Setter : Command(
 
     private fun saveInTarget() {
 
-        Target(config.targetPath).add(
+        val target = Target(installation.config.targetPath)
+
+        target.add(
             Properties().apply {
                 putAll(properties)
             }
@@ -70,7 +71,7 @@ class Setter : Command(
 
     private fun saveInAllEnvironments() {
 
-        val environments = paths.environmentsDir.listFiles { _, name ->
+        val environments = installation.environmentsDir.listFiles { _, name ->
             name.endsWith(Constants.DOT_JSON)
         }
 
@@ -79,38 +80,38 @@ class Setter : Command(
         environments.forEach { Environment(it).add(properties.toMap()) }
 
         val mustCheckout = environments.any {
-            it.nameWithoutExtension == config.currentEnv
+            it.nameWithoutExtension == installation.config.currentEnv
         }
 
         if (mustCheckout) {
-            checkout(tag = config.currentEnv ?: return)
+            val tag = installation.config.currentEnv ?: return
+
+            val environment = Environment.getOrCreate(installation.environmentsDir, tag)
+
+            environment.checkout()
         }
     }
 
     private fun saveInEnvironment() {
 
+        val config = installation.config
+
         val tag = tag ?: config.currentEnv ?: throw SpecifyEnvironmentError()
 
-        val environment = Environment.getOrCreate(paths.environmentsDir, tag)
+        val environment = Environment.getOrCreate(installation.environmentsDir, tag)
 
         environment.add(properties.toMap())
 
         // Checkout when set in current environment
         if (tag == config.currentEnv) {
-            checkout(tag)
+            environment.checkout()
         }
     }
 
-    private fun checkout(tag: String) {
+    private fun Environment.checkout() {
 
-        val target = Target(config.targetPath)
+        val target = Target(installation.config.targetPath)
 
-        val environment = Environment.getOrCreate(paths.environmentsDir, tag)
-
-        target.write(
-            environment
-                .read()
-                .toProperties()
-        )
+        target.write(read().toProperties())
     }
 }

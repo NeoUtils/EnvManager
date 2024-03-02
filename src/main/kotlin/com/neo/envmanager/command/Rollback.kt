@@ -1,25 +1,24 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.CliktCommand
 import com.neo.envmanager.com.neo.envmanager.exception.error.NoCurrentEnvironment
-import com.neo.envmanager.core.Command
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.extension.requireInstall
-import extension.getOrThrow
 
-class Rollback : Command(
+class Rollback : CliktCommand(
     help = "Rollback the target"
 ) {
 
     override fun run() {
 
-        val config = requireInstall()
+        val (config, environmentsDir) = requireInstall()
 
         val target = Target.getOrCreate(config.targetPath)
 
         val tag = config.currentEnv ?: throw NoCurrentEnvironment()
 
-        val environment = Environment(paths.environmentsDir, tag)
+        val environment = Environment(environmentsDir, tag)
 
         target.write(environment.read().toProperties())
     }
