@@ -40,7 +40,7 @@ class Export : CliktCommand(
         )
     }
 
-    private val tag by argument(
+    private val tags by argument(
         help = "Specific tag (optional"
     ).multiple()
 
@@ -59,7 +59,7 @@ class Export : CliktCommand(
             output.mkdirs()
         }
 
-        if (tag.isEmpty()) {
+        if (tags.isEmpty()) {
             exportAllEnvironments()
             return
         }
@@ -80,7 +80,7 @@ class Export : CliktCommand(
 
     private fun exportSpecificEnvironment() {
 
-        val environments = tag.map {
+        val environments = tags.map {
             Environment(installation.environmentsDir, it)
         }
 
@@ -90,18 +90,24 @@ class Export : CliktCommand(
     private fun writeExportFile(
         environments: List<Environment>
     ) {
+        val name = when {
+            environments.size == 1 -> {
+                environments.single().tag
+            }
 
-        val default by lazy {
-            Target(installation.config.targetPath)
+            tags.isEmpty() -> {
+                Target(installation.config.targetPath).name
+            }
+
+            else -> {
+                checkNotNull(
+                    terminal.prompt(
+                        prompt = "Choose a name for the export file",
+                        convert = NotBlankValidation
+                    )
+                )
+            }
         }
-
-        val name = checkNotNull(
-            terminal.prompt(
-                prompt = "Choose a name for the export file",
-                default = environments.singleOrNull()?.tag ?: default.name,
-                convert = NotBlankValidation
-            )
-        )
 
         output.resolve(name.envm).writeText(
             gson.toJson(
