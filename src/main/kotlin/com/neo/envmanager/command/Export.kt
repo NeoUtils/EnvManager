@@ -1,14 +1,20 @@
 package com.neo.envmanager.command
 
+import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.multiple
+import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.neo.envmanager.exception.error.NoEnvironmentsFound
 import com.neo.envmanager.model.Environment
 import com.neo.envmanager.model.Installation
 import com.neo.envmanager.model.Target
 import com.neo.envmanager.util.Constants
+import com.neo.envmanager.util.extension.promptFile
 import com.neo.envmanager.util.extension.requireInstall
 import com.neo.envmanager.util.gson
 import java.io.File
@@ -17,18 +23,23 @@ class Export : CliktCommand(
     help = "Export environments"
 ) {
 
-    private val destinationDir by argument(
-        name = "destination",
-        help = "Destination directory"
+    private val output by option(
+        names = arrayOf("-o", "--output"),
+        help = "Output directory"
     ).file(
-        mustExist = true,
         canBeDir = true,
         canBeFile = false
-    )
+    ).defaultLazy {
+        terminal.promptFile(
+            text = "Output directory",
+            canBeDir = true,
+            canBeFile = false
+        )
+    }
 
-    private val tag by option(
+    private val tag by argument(
         help = "Specific tag (optional"
-    )
+    ).multiple()
 
     private lateinit var installation: Installation
 
@@ -36,12 +47,21 @@ class Export : CliktCommand(
 
         installation = requireInstall()
 
-        if (tag != null) {
-            exportSpecificEnvironment(tag!!)
+        if (!output.exists()) {
+
+            val mustCreateMessage = "Output directory '${output.path}' does not exist. Create it?"
+
+            if (YesNoPrompt(mustCreateMessage, terminal).ask() != true) throw Abort()
+
+            output.mkdirs()
+        }
+
+        if (tag.isEmpty()) {
+            exportAllEnvironments()
             return
         }
 
-        exportAllEnvironments()
+        exportSpecificEnvironment()
     }
 
     private fun exportAllEnvironments() {
@@ -69,13 +89,19 @@ class Export : CliktCommand(
         )
     }
 
-    private fun exportSpecificEnvironment(tag: String) {
+    private fun exportSpecificEnvironment() {
 
-        val environment = Environment(installation.environmentsDir, tag)
+        val environments = tag.map { Environment(installation.environmentsDir, it) }
 
-        getExportFile(tag).writeText(
+        val name = environments.singleOrNull()?.tag ?: Target(installation.config.targetPath).name
+
+        getExportFile(name).writeText(
             gson.toJson(
-                mapOf(environment.tag to environment.read())
+                buildMap {
+                    environments.forEach {
+                        put(it.tag, it.read())
+                    }
+                }
             )
         )
     }
@@ -98,7 +124,7 @@ class Export : CliktCommand(
                 append(Constants.DOT_ENVM)
             }
 
-            file = destinationDir.resolve(filePath)
+            file = output.resolve(filePath)
 
             count++
 
