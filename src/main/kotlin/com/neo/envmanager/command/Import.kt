@@ -1,6 +1,5 @@
 package com.neo.envmanager.command
 
-import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -38,7 +37,7 @@ class Import : CliktCommand(
 
         val environments = gson.fromJson<Map<String, Map<String, String>>>(file.readText(), type)
 
-        environments.forEach { (tag, map) ->
+        for ((tag, map) in environments) {
 
             val promise = FilePromise(installation.environmentsDir, tag)
 
@@ -48,7 +47,7 @@ class Import : CliktCommand(
 
                 val mustOverwriteMessage = "Do you want to overwrite it?"
 
-                if (YesNoPrompt(mustOverwriteMessage, terminal).ask() != true) throw Abort()
+                if (YesNoPrompt(mustOverwriteMessage, terminal).ask() != true) continue
             }
 
             Environment.getOrCreate(promise).write(map)
