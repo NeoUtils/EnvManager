@@ -27,7 +27,7 @@ class Export : CliktCommand(
 ) {
 
     private val output by option(
-        names = arrayOf("--output"),
+        names = arrayOf("-o", "--output"),
         help = "Output directory"
     ).file(
         canBeDir = true,

@@ -16,7 +16,7 @@ $ envm remove <key1> <key2> ... [options]
 
 ## Options
 
-### `--tag`
+### `--tag` or `-t`
 Specifies the target environment. In the absence of this option, the current environment is used.
 
 ```shell

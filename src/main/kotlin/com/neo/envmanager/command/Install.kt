@@ -24,7 +24,7 @@ class Install : CliktCommand(help = "Install environment control") {
     ).flag()
 
     private val target by option(
-        names = arrayOf("--target"),
+        names = arrayOf("-t", "--target"),
         help = "Target (environment properties file)"
     ).file(
         mustExist = true,

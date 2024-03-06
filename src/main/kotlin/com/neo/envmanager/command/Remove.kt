@@ -29,7 +29,7 @@ class Remove : CliktCommand(
     ).multiple()
 
     private val tag by option(
-        names = arrayOf("--tag"),
+        names = arrayOf("-t", "--tag"),
         help = "Specified environment tag; current environment is used by default"
     )
 

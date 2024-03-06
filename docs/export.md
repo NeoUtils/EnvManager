@@ -17,7 +17,7 @@ $ envm export <tags>
 
 ## Options
 
-### `--output`
+### `--output` or `-o`
 
 Specify the output directory of the environments file; if not specified, will be prompt for it during export.
 
