@@ -5,18 +5,19 @@ Use the `save` command to save the properties from the target properties file (*
 **To save in the current environment:**
 
 ```shell
-$ envm save [options]
+$ envm save [flags]
 ```
 
 **To save in a specific environment:**
 
 ```shell
-$ envm save <tag> [options]
+$ envm save <tag> [flags]
 ```
 
-## Options
+## Flags
 
 ### `--clipboard` or `-c`
+
 Captures the properties from the clipboard instead of using the **target** file.
 
 ```shell

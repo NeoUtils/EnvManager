@@ -14,9 +14,10 @@ $ envm list
 $ envm list <tag>
 ```
 
-## Options
+## Flags
 
 ### `--current` or `-c`
+
 Displays the properties of the current environment, making it easier to quickly view the configuration in use.
 
 ```shell
@@ -24,6 +25,7 @@ $ envm list --current
 ```
 
 ### `--target` or `-t`
+
 Displays the properties of the target properties file (**target**).
 
 ```shell

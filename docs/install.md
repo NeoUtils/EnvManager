@@ -8,12 +8,18 @@ $ envm install [options]
 
 ## Options
 
-### `--target` or `-t`
+### `--target=` or `-t`
 
 Sets the path of the target properties file (`target`). If not specified, **EnvManager** will prompt for it during installation.
 
 ```shell
 $ envm install --target=environment.properties
+```
+
+or
+
+```shell
+$ envm install -t environment.properties
 ```
 
 ### `--force` or `-f`

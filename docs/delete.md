@@ -7,13 +7,19 @@ Use the `delete` command to remove one or more environments.
 ``` shell
 $ envm delete <tag>
 ```
+
 **Deleting multiple environments:**
 
 ``` shell
-$ envm delete <tag1> <tag2> ... [options]
+$ envm delete <tag1> <tag2> ... [flags]
 ```
 
-## Options
+## Flags
 
 ### `--all` or `-a`
+
 Deletes all environments.
+
+``` shell
+$ envm delete --all
+```

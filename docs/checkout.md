@@ -6,18 +6,18 @@ Use the `checkout` command to switch between environments.
 $ envm checkout <environment>
 ```
 
-It can also be used to create an empty environment using the `-force` option.
+It can also be used to create an empty environment using the `--force` option.
 
 ```shell
-$ envm checkout <environment> -force
+$ envm checkout <environment> --force
 ```
 
-## Option
+## Flags
 
-### `-force` or `-f`
+### `--force` or `-f`
 
 Forces the checkout, creating an environment if it does not exist.
 
 ```shell
-$ envm checkout <environment> -force
+$ envm checkout <environment> --force
 ```

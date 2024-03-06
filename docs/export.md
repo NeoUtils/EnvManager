@@ -17,10 +17,15 @@ $ envm export <tags>
 
 ## Options
 
-### `--output` or `-o`
+### `--output=` or `-o`
 
 Specify the output directory of the environments file; if not specified, will be prompt for it during export.
 
 ```shell
 $ envm export --output=<output-directory>
+```
+or
+
+```shell
+$ envm export -o <output-directory>
 ```
